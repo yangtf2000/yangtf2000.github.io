@@ -1,0 +1,1998 @@
+---
+layout: post
+title: "城市更新资金申报查询手册"
+date: 2026-08-13
+category: work
+tags: [资金, 申报, 政策]
+excerpt: "湖南省住建厅 · 2026年6月版"
+---
+
+<link rel="stylesheet" href="/assets/theme.css"><link rel="stylesheet" href="/assets/force-dark.css"><link rel="stylesheet" href="/assets/city-override.css"><link rel="stylesheet" href="/assets/site.css">
+<style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 12px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 20px 16px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .header p {
+            opacity: 0.85;
+            font-size: 12px;
+        }
+        .search-section {
+            padding: 16px;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .search-box {
+            display: flex;
+            gap: 8px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-width: 0;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #818cf8;
+        }
+        .search-box input::placeholder {
+            color: #9aa6bf;
+        }
+        .search-box button {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .search-tips {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #e8ecf4;
+        }
+        .content {
+            padding: 16px;
+        }
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 14px;
+            padding-left: 10px;
+            border-left: 3px solid #818cf8;
+        }
+        /* 总览表格 - 手机端卡片化 */
+        .overview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+        .overview-table th {
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        .overview-table td {
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            text-align: center;
+        }
+        .overview-table tr:hover {
+            background: rgba(255,255,255,0.04);
+        }
+        .overview-table .category {
+            text-align: left;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(255,255,255,0.04);
+            font-size: 12px;
+        }
+        /* 手机端卡片列表 */
+        .card-list {
+            display: block;
+        }
+        .category-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .category-card-header {
+            background: rgba(255,255,255,0.04);
+            padding: 12px 14px;
+            font-weight: 600;
+            color: #38bdf8;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-card-header .arrow {
+            font-size: 12px;
+            color: #e8ecf4;
+            transition: transform 0.3s;
+        }
+        .category-card.expanded .arrow {
+            transform: rotate(180deg);
+        }
+        .category-card-body {
+            padding: 12px 14px;
+            display: none;
+        }
+        .category-card.expanded .category-card-body {
+            display: block;
+        }
+        .fund-tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .fund-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        .fund-tag:active {
+            transform: scale(0.95);
+        }
+        .fund-1 { background: rgba(56,189,248,0.08); color: #38bdf8; }
+        .fund-2 { background: rgba(52,211,153,0.08); color: #34d399; }
+        .fund-3 { background: rgba(245,158,11,0.08); color: #fbbf24; }
+        .fund-4 { background: rgba(168,85,247,0.08); color: #a855f7; }
+        .fund-5 { background: rgba(244,63,94,0.08); color: #f87171; }
+        .fund-empty {
+            color: #9aa6bf;
+            font-size: 12px;
+        }
+        .view-detail-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255,255,255,0.06);
+            color: #e8ecf4;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .view-detail-btn:active {
+            background: rgba(255,255,255,0.06);
+        }
+        /* 图例 */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 10px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+        }
+        /* 详情页 */
+        .detail-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .detail-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+        .detail-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 6px;
+        }
+        .detail-category {
+            color: #e8ecf4;
+            font-size: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+        }
+        .detail-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-left: 3px solid #818cf8;
+        }
+        .detail-card h3 {
+            color: #38bdf8;
+            font-size: 15px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .detail-card h4 {
+            color: #38bdf8;
+            font-size: 13px;
+            margin: 12px 0 6px;
+            font-weight: 600;
+        }
+        .detail-card h4:first-child {
+            margin-top: 0;
+        }
+        .detail-card p, .detail-card li {
+            color: #e8ecf4;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .detail-card ul, .detail-card ol {
+            padding-left: 18px;
+            margin-bottom: 6px;
+        }
+        .detail-card li {
+            margin-bottom: 4px;
+        }
+        .detail-card table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+        .detail-card th, .detail-card td {
+            border: 1px solid rgba(255,255,255,0.10);
+            padding: 6px 8px;
+            text-align: left;
+        }
+        .detail-card th {
+            background: rgba(255,255,255,0.06);
+            font-weight: 600;
+        }
+        .highlight-num {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        /* 搜索结果页 */
+        .search-results {
+            display: none;
+        }
+        .search-results.active {
+            display: block;
+        }
+        .result-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .result-item:active {
+            background: rgba(255,255,255,0.04);
+        }
+        .result-item-title {
+            font-weight: 600;
+            color: #38bdf8;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .result-item-desc {
+            font-size: 12px;
+            color: #e8ecf4;
+        }
+        .result-count {
+            font-size: 12px;
+            color: #e8ecf4;
+            margin-bottom: 12px;
+        }
+        .footer {
+            text-align: center;
+            padding: 14px;
+            color: #9aa6bf;
+            font-size: 11px;
+            border-top: 1px solid #e9ecef;
+        }
+        /* 平板及以上显示表格 */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .container {
+                max-width: 1200px;
+                border-radius: 16px;
+            }
+            .header {
+                padding: 30px 40px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .search-section {
+                padding: 20px 40px;
+            }
+            .content {
+                padding: 30px 40px;
+            }
+            .overview-table {
+                display: table;
+            }
+            .card-list {
+                display: none;
+            }
+            .section-title {
+                font-size: 20px;
+            }
+            .legend {
+                gap: 15px;
+                padding: 15px;
+            }
+            .legend-item {
+                font-size: 13px;
+            }
+        }
+    
+    </style><style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 12px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 20px 16px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .header p {
+            opacity: 0.85;
+            font-size: 12px;
+        }
+        .search-section {
+            padding: 16px;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .search-box {
+            display: flex;
+            gap: 8px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-width: 0;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #818cf8;
+        }
+        .search-box input::placeholder {
+            color: #9aa6bf;
+        }
+        .search-box button {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .search-tips {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #e8ecf4;
+        }
+        .content {
+            padding: 16px;
+        }
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 14px;
+            padding-left: 10px;
+            border-left: 3px solid #818cf8;
+        }
+        /* 总览表格 - 手机端卡片化 */
+        .overview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+        .overview-table th {
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        .overview-table td {
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            text-align: center;
+        }
+        .overview-table tr:hover {
+            background: rgba(255,255,255,0.04);
+        }
+        .overview-table .category {
+            text-align: left;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(255,255,255,0.04);
+            font-size: 12px;
+        }
+        /* 手机端卡片列表 */
+        .card-list {
+            display: block;
+        }
+        .category-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .category-card-header {
+            background: rgba(255,255,255,0.04);
+            padding: 12px 14px;
+            font-weight: 600;
+            color: #38bdf8;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-card-header .arrow {
+            font-size: 12px;
+            color: #e8ecf4;
+            transition: transform 0.3s;
+        }
+        .category-card.expanded .arrow {
+            transform: rotate(180deg);
+        }
+        .category-card-body {
+            padding: 12px 14px;
+            display: none;
+        }
+        .category-card.expanded .category-card-body {
+            display: block;
+        }
+        .fund-tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .fund-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        .fund-tag:active {
+            transform: scale(0.95);
+        }
+        .fund-1 { background: rgba(56,189,248,0.08); color: #38bdf8; }
+        .fund-2 { background: rgba(52,211,153,0.08); color: #34d399; }
+        .fund-3 { background: rgba(245,158,11,0.08); color: #fbbf24; }
+        .fund-4 { background: rgba(168,85,247,0.08); color: #a855f7; }
+        .fund-5 { background: rgba(244,63,94,0.08); color: #f87171; }
+        .fund-empty {
+            color: #9aa6bf;
+            font-size: 12px;
+        }
+        .view-detail-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255,255,255,0.06);
+            color: #e8ecf4;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .view-detail-btn:active {
+            background: rgba(255,255,255,0.06);
+        }
+        /* 图例 */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 10px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+        }
+        /* 详情页 */
+        .detail-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .detail-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+        .detail-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 6px;
+        }
+        .detail-category {
+            color: #e8ecf4;
+            font-size: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+        }
+        .detail-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-left: 3px solid #818cf8;
+        }
+        .detail-card h3 {
+            color: #38bdf8;
+            font-size: 15px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .detail-card h4 {
+            color: #38bdf8;
+            font-size: 13px;
+            margin: 12px 0 6px;
+            font-weight: 600;
+        }
+        .detail-card h4:first-child {
+            margin-top: 0;
+        }
+        .detail-card p, .detail-card li {
+            color: #e8ecf4;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .detail-card ul, .detail-card ol {
+            padding-left: 18px;
+            margin-bottom: 6px;
+        }
+        .detail-card li {
+            margin-bottom: 4px;
+        }
+        .detail-card table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+        .detail-card th, .detail-card td {
+            border: 1px solid rgba(255,255,255,0.10);
+            padding: 6px 8px;
+            text-align: left;
+        }
+        .detail-card th {
+            background: rgba(255,255,255,0.06);
+            font-weight: 600;
+        }
+        .highlight-num {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        /* 搜索结果页 */
+        .search-results {
+            display: none;
+        }
+        .search-results.active {
+            display: block;
+        }
+        .result-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .result-item:active {
+            background: rgba(255,255,255,0.04);
+        }
+        .result-item-title {
+            font-weight: 600;
+            color: #38bdf8;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .result-item-desc {
+            font-size: 12px;
+            color: #e8ecf4;
+        }
+        .result-count {
+            font-size: 12px;
+            color: #e8ecf4;
+            margin-bottom: 12px;
+        }
+        .footer {
+            text-align: center;
+            padding: 14px;
+            color: #9aa6bf;
+            font-size: 11px;
+            border-top: 1px solid #e9ecef;
+        }
+        /* 平板及以上显示表格 */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .container {
+                max-width: 1200px;
+                border-radius: 16px;
+            }
+            .header {
+                padding: 30px 40px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .search-section {
+                padding: 20px 40px;
+            }
+            .content {
+                padding: 30px 40px;
+            }
+            .overview-table {
+                display: table;
+            }
+            .card-list {
+                display: none;
+            }
+            .section-title {
+                font-size: 20px;
+            }
+            .legend {
+                gap: 15px;
+                padding: 15px;
+            }
+            .legend-item {
+                font-size: 13px;
+            }
+        }
+    
+    </style>
+
+    <div class="container">
+        <div class="header">
+            <h1>城市更新资金申报查询手册</h1>
+            <p>湖南省住建厅 · 2026年6月版</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索：老旧小区、专项债、危旧房..." onkeyup="handleSearch(event)">
+                <button onclick="performSearch()">搜索</button>
+            </div>
+            <div class="search-tips">
+                💡 输入关键词直接跳转详情页；点击资金标签查看具体申报要求
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 总览区域 -->
+            <div id="overviewSection">
+                <h2 class="section-title">八大改造方向资金来源总览</h2>
+                
+                <div class="legend">
+                    <div class="legend-item"><span class="fund-tag fund-1">财政补助</span></div>
+                    <div class="legend-item"><span class="fund-tag fund-2">中央预算内</span></div>
+                    <div class="legend-item"><span class="fund-tag fund-3">专项债券</span></div>
+                    <div class="legend-item"><span class="fund-tag fund-4">政策性金融</span></div>
+                    <div class="legend-item"><span class="fund-tag fund-5">特别国债</span></div>
+                </div>
+
+                <!-- 桌面端表格 -->
+                <table class="overview-table" id="overviewTable">
+                    <thead>
+                        <tr>
+                            <th style="width:24%">改造方向</th>
+                            <th>财政补助</th>
+                            <th>中央预算内</th>
+                            <th>特别国债</th>
+                            <th>专项债券</th>
+                            <th>政策性金融</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="category">一、既有建筑改造利用<br><span style="font-size:11px;color: #e8ecf4;font-weight:normal">（城市危旧房改造）</span></td>
+                            <td><a class="fund-tag fund-1" onclick="showDetail('detail-1-1')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-1-2')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-1-3')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-1-4')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">二、城镇老旧小区整治改造</td>
+                            <td><a class="fund-tag fund-1" onclick="showDetail('detail-2-1')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-2-2')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-2-3')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-2-4')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">三、完整社区建设<br><span style="font-size:11px;color: #e8ecf4;font-weight:normal">（嵌入式服务设施）</span></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-3-1')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-5" onclick="showDetail('detail-3-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-3-3')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-3-4')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">四（一）、老旧街区（厂区）改造</td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-4a-1')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-4a-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-4a-3')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">四（二）、城中村改造</td>
+                            <td><a class="fund-tag fund-1" onclick="showDetail('detail-4b-1')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-4b-2')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-4b-3')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-4b-4')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">五（一）、"平急两用"公共设施</td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-5" onclick="showDetail('detail-5a-1')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-5a-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-5a-3')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">五（三）、全民健身场地设施</td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-5c-1')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-5c-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-5c-3')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">五（四）、城市公共空间改造</td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-5d-1')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-5d-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-5d-3')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">六（一）、地下管线管网和管廊</td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-6a-1')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-5" onclick="showDetail('detail-6a-2')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-6a-3')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">六（二）、生活垃圾处理设施</td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-6b-1')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-6b-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-6b-3')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">七、修复城市生态系统<br><span style="font-size:11px;color: #e8ecf4;font-weight:normal">（水环境综合治理）</span></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-7-1')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-7-2')">✓ 支持</a></td>
+                        </tr>
+                        <tr>
+                            <td class="category">八、保护传承城市历史文化<br><span style="font-size:11px;color: #e8ecf4;font-weight:normal">（历史文化街区）</span></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-2" onclick="showDetail('detail-8-1')">✓ 支持</a></td>
+                            <td><span class="fund-empty">—</span></td>
+                            <td><a class="fund-tag fund-3" onclick="showDetail('detail-8-2')">✓ 支持</a></td>
+                            <td><a class="fund-tag fund-4" onclick="showDetail('detail-8-3')">✓ 支持</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 手机端卡片列表 -->
+                <div class="card-list" id="cardList">
+                    <!-- 由JS动态生成 -->
+                </div>
+            </div>
+
+            <!-- 搜索结果区域 -->
+            <div id="searchResults" class="search-results">
+                <button class="back-btn" onclick="showOverview()">← 返回总览</button>
+                <div class="result-count" id="resultCount"></div>
+                <div id="resultList"></div>
+            </div>
+
+            <!-- 详情区域 -->
+            <div id="detailSection" class="detail-section">
+                <button class="back-btn" onclick="showOverview()">← 返回总览</button>
+                <div class="detail-title" id="detailTitle"></div>
+                <div class="detail-category" id="detailCategory"></div>
+                <div id="detailContent"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            资料来源：湖南建设信息2026年第46期
+        </div>
+    </div>
+
+    <script>
+        // 分类数据 - 用于卡片列表和搜索
+        const categories = [
+            { id: 'cat-1', name: '一、既有建筑改造利用', sub: '城市危旧房改造', funds: ['detail-1-1','detail-1-2','detail-1-3','detail-1-4'], keywords: '既有建筑 危旧房 棚户区 C级 D级 预制板 非成套住房' },
+            { id: 'cat-2', name: '二、城镇老旧小区整治改造', sub: '', funds: ['detail-2-1','detail-2-2','detail-2-3','detail-2-4'], keywords: '老旧小区 加装电梯 物业费 充电桩 停车位 2000年 2005年' },
+            { id: 'cat-3', name: '三、完整社区建设', sub: '社区嵌入式服务设施', funds: ['detail-3-1','detail-3-2','detail-3-3','detail-3-4'], keywords: '完整社区 嵌入式 养老 托育 普惠 床位 托位 一老一小' },
+            { id: 'cat-4a', name: '四（一）、老旧街区（厂区）改造', sub: '', funds: ['detail-4a-1','detail-4a-2','detail-4a-3'], keywords: '老旧街区 老旧厂区 工业遗产 火车站 业态升级 活力提升' },
+            { id: 'cat-4b', name: '四（二）、城中村改造', sub: '', funds: ['detail-4b-1','detail-4b-2','detail-4b-3','detail-4b-4'], keywords: '城中村 拆除新建 整治提升 安置住房 土地出让 底商' },
+            { id: 'cat-5a', name: '五（一）、"平急两用"公共设施', sub: '', funds: ['detail-5a-1','detail-5a-2','detail-5a-3'], keywords: '平急两用 应急保障医院 城郊大仓 仓储物流 适老化 适儿化' },
+            { id: 'cat-5c', name: '五（三）、全民健身场地设施', sub: '', funds: ['detail-5c-1','detail-5c-2','detail-5c-3'], keywords: '全民健身 体育公园 健身中心 足球场 户外运动 步道 十五五' },
+            { id: 'cat-5d', name: '五（四）、城市公共空间改造', sub: '', funds: ['detail-5d-1','detail-5d-2','detail-5d-3'], keywords: '公共空间 交通枢纽 轨道交通 数字化 智能化 低碳化' },
+            { id: 'cat-6a', name: '六（一）、地下管线管网和管廊', sub: '', funds: ['detail-6a-1','detail-6a-2','detail-6a-3'], keywords: '地下管线 管网 管廊 燃气 供水 排水 供热 污水 漏损 沿江' },
+            { id: 'cat-6b', name: '六（二）、生活垃圾处理设施', sub: '', funds: ['detail-6b-1','detail-6b-2','detail-6b-3'], keywords: '生活垃圾 焚烧 厨余垃圾 飞灰 分类 收转运' },
+            { id: 'cat-7', name: '七、修复城市生态系统', sub: '水环境综合治理', funds: ['detail-7-1','detail-7-2'], keywords: '生态修复 水环境 江河 湖泊 饮用水源 内源污染 海绵城市 绿道' },
+            { id: 'cat-8', name: '八、保护传承城市历史文化', sub: '历史文化街区保护提升', funds: ['detail-8-1','detail-8-2','detail-8-3'], keywords: '历史文化 历史街区 文物 历史建筑 非遗 修缮 抗震加固' }
+        ];
+
+        // 资金类型名称映射
+        const fundTypeNames = {
+            'detail-1-1': '中央/省级财政补助资金', 'detail-1-2': '中央预算内资金', 'detail-1-3': '专项债券', 'detail-1-4': '新型政策性金融工具',
+            'detail-2-1': '中央/省级财政补助资金', 'detail-2-2': '中央预算内资金', 'detail-2-3': '专项债券', 'detail-2-4': '新型政策性金融工具',
+            'detail-3-1': '中央预算内资金', 'detail-3-2': '超长期特别国债', 'detail-3-3': '专项债券', 'detail-3-4': '新型政策性金融工具',
+            'detail-4a-1': '中央预算内资金', 'detail-4a-2': '专项债券', 'detail-4a-3': '新型政策性金融工具',
+            'detail-4b-1': '中央/省级财政补助资金', 'detail-4b-2': '中央预算内资金', 'detail-4b-3': '专项债券', 'detail-4b-4': '新型政策性金融工具',
+            'detail-5a-1': '超长期特别国债', 'detail-5a-2': '专项债券', 'detail-5a-3': '新型政策性金融工具',
+            'detail-5c-1': '中央预算内资金', 'detail-5c-2': '专项债券', 'detail-5c-3': '新型政策性金融工具',
+            'detail-5d-1': '中央预算内资金', 'detail-5d-2': '专项债券', 'detail-5d-3': '新型政策性金融工具',
+            'detail-6a-1': '中央预算内资金', 'detail-6a-2': '超长期特别国债', 'detail-6a-3': '新型政策性金融工具',
+            'detail-6b-1': '中央预算内资金', 'detail-6b-2': '专项债券', 'detail-6b-3': '新型政策性金融工具',
+            'detail-7-1': '中央预算内资金', 'detail-7-2': '新型政策性金融工具',
+            'detail-8-1': '中央预算内资金', 'detail-8-2': '专项债券', 'detail-8-3': '新型政策性金融工具'
+        };
+
+        // 资金类型颜色类
+        const fundColors = {
+            '中央/省级财政补助资金': 'fund-1',
+            '中央预算内资金': 'fund-2',
+            '专项债券': 'fund-3',
+            '新型政策性金融工具': 'fund-4',
+            '超长期特别国债': 'fund-5'
+        };
+
+        // 详情数据 - 详细版本
+        const detailData = {
+            // ===== 一、既有建筑改造利用 =====
+            'detail-1-1': {
+                category: '一、既有建筑改造利用（城市危旧房改造）',
+                fundType: '中央/省级财政补助资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>主要用于支持城市（含县城）建成区范围内国有土地上的以下项目支出：</p>
+                        <ul>
+                            <li>C级、D级危险住房的征收补偿、安置住房建设（购买）</li>
+                            <li>上述住房的拆除新建、改建（扩建、翻建）和抗震加固</li>
+                            <li>国有企事业单位破产改制、"三供一业"分离移交等遗留的非成套住房改造</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>采取<strong>因素法</strong>分配资金：</p>
+                        <ul>
+                            <li>根据各市县城市危旧房（棚户区）改造<strong>套数因素</strong>进行分配</li>
+                            <li>结合各地<strong>财政困难程度</strong>进行调节</li>
+                        </ul>
+                    `},
+                    { title: '三、申报要点', content: `
+                        <h4>1. 申报时间</h4>
+                        <p>2025年计划报送通知为2024年10月下发，具体申报时间以当年下发通知为准。</p>
+                        <h4>2. 申报材料</h4>
+                        <p>以地方政府名义申报的纳入当年城市危旧房（棚户区）计划表项目（项目储备库），并加盖公章。</p>
+                        <h4>3. 申报程序</h4>
+                        <ol>
+                            <li>各县市区、市州逐级上报本地区的项目计划清单</li>
+                            <li>项目纳入省住建厅年度改造计划，进入全省项目储备库</li>
+                            <li>上级补助资金下达后，根据补助资金管理办法分配至各县市区、市州</li>
+                        </ol>
+                    `}
+                ]
+            },
+            'detail-1-2': {
+                category: '一、既有建筑改造利用（城市危旧房改造）',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li>各相关城市（含县城）经专业机构鉴定的国有土地上<strong>C级、D级危旧住房</strong>（含C级、D级预制板危房）改造项目，<strong>优先支持D级</strong></li>
+                            <li>国有企事业单位破产改制、"三供一业"分离移交等遗留的非成套住房</li>
+                            <li>2024年以前纳入国家计划的棚户区改造收尾项目</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>中部、西部地区中央预算内投资支持金额原则上不超过项目总投资的：</p>
+                        <ul>
+                            <li><span class="highlight-num">中部地区：70%</span></li>
+                            <li><span class="highlight-num">西部地区：80%</span></li>
+                        </ul>
+                        <p><strong>注意：</strong>不含征地拆迁、异地安置费用。</p>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>2026年申报时间为<strong>2026年1月</strong>，具体以当年通知为准。</p>
+                    `},
+                    { title: '四、申报材料', content: `
+                        <ul>
+                            <li>项目资金申请报告（按发改办投资〔2024〕1049号编制）</li>
+                            <li>批复文件、可研报告、初步设计及概算</li>
+                            <li>用地、能评、环评、施工许可等前期手续</li>
+                            <li>财政资金承诺文件</li>
+                            <li>C级、D级危旧住房鉴定证明</li>
+                        </ul>
+                    `},
+                    { title: '五、注意事项', content: `
+                        <ul>
+                            <li>能够尽快形成实物工作量，当年内能够开工</li>
+                            <li>项目资金拼盘要完整闭合</li>
+                            <li>不得用于征地拆迁、异地安置等非固定资产投资支出</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-1-3': {
+                category: '一、既有建筑改造利用（城市危旧房改造）',
+                fundType: '专项债券（"自审自发"地区）',
+                sections: [
+                    { title: '一、支持条件', content: `
+                        <h4>支持范围</h4>
+                        <p>无负面清单内容。</p>
+                        <h4>支持标准</h4>
+                        <p>支持比例最高不超过总投资的<span class="highlight-num">80%</span>，项目收入能够偿付专项债券本息。</p>
+                    `},
+                    { title: '二、申报程序（四阶段）', content: `
+                        <table>
+                            <tr><th>阶段</th><th>核心工作</th></tr>
+                            <tr><td>"一上"阶段（储备库）</td><td>每年10月底前集中报送下一年度项目；次年1月底、3月底前补充报送</td></tr>
+                            <tr><td>"一下"阶段（限额下达）</td><td>省财政厅根据国家限额，结合债务风险、财力状况分配专项债券限额</td></tr>
+                            <tr><td>"二上"阶段（发行库）</td><td>5月底前完成发行前终审，通过项目纳入发行库管理</td></tr>
+                            <tr><td>"二下"阶段（转贷市县）</td><td>省财政厅转贷市县，按项目实施进度及时拨付</td></tr>
+                        </table>
+                    `},
+                    { title: '三、三部门审核要点', content: `
+                        <h4>1. 住建/行业主管部门</h4>
+                        <ul>
+                            <li>申报资料是否符合要求</li>
+                            <li>是否符合行业规划和政策要求</li>
+                            <li>建设内容、项目收益测算是否合理</li>
+                        </ul>
+                        <h4>2. 发改部门</h4>
+                        <ul>
+                            <li>是否落实《地方政府专项债券禁止类项目清单》</li>
+                            <li>是否落实可用作项目资本金的行业要求</li>
+                            <li>立项程序是否合规，总投资是否合理</li>
+                            <li>项目投向是否符合突出重点原则</li>
+                        </ul>
+                        <h4>3. 财政部门</h4>
+                        <ul>
+                            <li>融资平衡方案编制是否合规</li>
+                            <li>事前绩效评估是否开展</li>
+                            <li>债券资金额度需求是否合理</li>
+                            <li>收入成本预测是否有依据（需2~3个依据或可比案例）</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-1-4': {
+                category: '一、既有建筑改造利用（城市危旧房改造）',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '一、支持条件', content: `
+                        <h4>支持范围</h4>
+                        <p>支持城市危旧房改造。项目须纳入全省住房城乡建设项目储备库，严禁新增地方政府隐性债务。</p>
+                        <h4>支持标准</h4>
+                        <p>用于补充项目资本金缺口，支持比例原则上不超过项目资本金的<span class="highlight-num">50%</span>，需统筹考虑资金平衡。</p>
+                    `},
+                    { title: '二、申报要点', content: `
+                        <h4>1. 申报时间</h4>
+                        <p>全年不定期报送。</p>
+                        <h4>2. 申报程序</h4>
+                        <p>市州住建部门审核把关后，以市州为单位报送省住建厅，省住建厅不定期推送项目清单至国开行、农发行湖南省分行。融资需求迫切的可同步报送至省住建厅和国开行、农发行。</p>
+                    `},
+                    { title: '三、注意事项', content: `
+                        <ul>
+                            <li>符合国家重大战略、宏观调控政策、相关行业政策</li>
+                            <li>基础设施类适度超前、不过度超前；产业类防止低水平重复建设</li>
+                            <li>应为可产生一定收益的准公益性或经营性项目</li>
+                            <li>在建项目总投资完成率不得超过80%；新开工项目须已完成立项，当年内能开工</li>
+                            <li>严禁新增地方政府隐性债务，需出具相关证明</li>
+                            <li>可与中央预算内投资、专项债券拼盘使用，<strong>不得与超长期特别国债共同使用</strong></li>
+                        </ul>
+                    `},
+                    { title: '四、审核要点', content: `
+                        <h4>1. 项目借款人情况</h4>
+                        <p>明确股东借款承贷主体。事业单位不得作为股东借款承贷主体，需优化项目公司股权结构。</p>
+                        <h4>2. 项目情况</h4>
+                        <p>强化收益平衡管理，融资能力与偿债能力匹配，融资规模与项目收益平衡。</p>
+                        <h4>3. 投资要素情况</h4>
+                        <p>科学设计退出机制：股东借款模式制定分期还款计划；股权投资模式明确退出路径。</p>
+                    `}
+                ]
+            },
+            // ===== 二、城镇老旧小区 =====
+            'detail-2-1': {
+                category: '二、城镇老旧小区整治改造',
+                fundType: '中央/省级财政补助资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li>小区内水电路气等配套基础设施和公共服务设施建设改造</li>
+                            <li>小区内房屋公共区域修缮、建筑节能改造</li>
+                            <li>支持有条件的小区加装电梯等支出</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>采取<strong>因素法</strong>测算分配：</p>
+                        <ul>
+                            <li>改造面积、户数、楼栋数、小区个数等因素</li>
+                            <li>结合财政困难程度进行调节</li>
+                        </ul>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>2025年计划报送通知于2024年10月下发，具体以当年通知为准。</p>
+                    `},
+                    { title: '四、申报材料', content: `
+                        <p>以地方政府名义申报的纳入当年全省城镇老旧小区改造项目计划表，加盖公章。</p>
+                    `}
+                ]
+            },
+            'detail-2-2': {
+                category: '二、城镇老旧小区整治改造',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p><strong>2005年底以前建成</strong>纳入国家计划的城镇老旧小区改造，<strong>优先支持2000年底建成</strong>的。</p>
+                        <ul>
+                            <li>小区内基础设施和公共服务设施</li>
+                            <li>小区外与城市主干网衔接的配套项目</li>
+                            <li>既有建筑加装电梯、屋面防水等楼本体改造</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：不超过总投资<span class="highlight-num">70%</span></li>
+                            <li>西部地区：不超过总投资<span class="highlight-num">80%</span></li>
+                        </ul>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>2026年申报时间为<strong>2026年1月</strong>。</p>
+                    `},
+                    { title: '四、注意事项', content: `
+                        <ul>
+                            <li>可研需注明小区名称、户数、栋数、面积、建成年代等基础信息</li>
+                            <li>当年内能够开工；已开工项目为近三年开工且尚未完工</li>
+                            <li>资金拼盘完整闭合</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-2-3': {
+                category: '二、城镇老旧小区整治改造',
+                fundType: '专项债券',
+                sections: [
+                    { title: '一、支持条件', content: `
+                        <h4>支持范围</h4>
+                        <p>重点改造2000年底前建成的城镇老旧小区，2001-2005年支持公有住房改造。</p>
+                        <h4>支持标准</h4>
+                        <p>最高不超过总投资的<span class="highlight-num">80%</span>，项目收入能够偿付本息。</p>
+                    `},
+                    { title: '二、收益测算特别要求', content: `
+                        <h4>可计入收入来源</h4>
+                        <ul>
+                            <li>公共停车位出租收入</li>
+                            <li>充电桩服务费收入</li>
+                            <li>物业费收入</li>
+                            <li>公共服务用房出租收入</li>
+                        </ul>
+                        <h4>测算限制</h4>
+                        <ul>
+                            <li>物业费计费面积不超过改造总建筑面积的<strong>60%</strong></li>
+                            <li>充电桩单个日周转不超过<strong>3次</strong>，使用率不超过<strong>60%</strong></li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-2-4': {
+                category: '二、城镇老旧小区整治改造',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '一、支持条件', content: `
+                        <p>支持城镇老旧小区改造项目，须纳入全省项目储备库。补充资本金缺口，不超过资本金的50%。</p>
+                    `},
+                    { title: '二、注意事项', content: `
+                        <ul>
+                            <li>在建项目总投资完成率不得超过80%</li>
+                            <li>新开工项目必须已完成立项，当年内能开工</li>
+                            <li>可与中央预算内投资、专项债券拼盘使用</li>
+                            <li><strong>不得与超长期特别国债共同使用</strong></li>
+                        </ul>
+                    `}
+                ]
+            },
+            // ===== 三、完整社区建设 =====
+            'detail-3-1': {
+                category: '三、完整社区建设（社区嵌入式服务设施）',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、养老方向支持', content: `
+                        <h4>支持范围</h4>
+                        <ul>
+                            <li><strong>社区居家养老服务网络</strong>建设</li>
+                            <li><strong>公办养老服务机构</strong>新建/改扩建</li>
+                            <li><strong>普惠性养老服务</strong>（培训疗养机构转型、医养结合等）</li>
+                        </ul>
+                        <h4>支持标准</h4>
+                        <ul>
+                            <li>公办养老：中部60%、西部80%，设备购置不超过30%</li>
+                            <li>普惠养老：每张床位<strong>5万元</strong>定额补助</li>
+                        </ul>
+                    `},
+                    { title: '二、托育方向支持', content: `
+                        <h4>支持范围</h4>
+                        <ul>
+                            <li>公办托育综合服务中心建设</li>
+                            <li>公办托育服务网络建设</li>
+                            <li>扩大普惠性托育服务供给</li>
+                        </ul>
+                        <h4>支持标准</h4>
+                        <ul>
+                            <li>公办托育：中部60%、西部80%，设备购置不超过30%</li>
+                            <li>普惠托育：每个新增托位不超过<strong>2万元</strong>定额补助</li>
+                        </ul>
+                    `},
+                    { title: '三、申报要点', content: `
+                        <h4>申报时间</h4>
+                        <p>2026年计划报送通知于2026年3月下发。</p>
+                        <h4>养老项目注意事项</h4>
+                        <ul>
+                            <li>社区居家养老：单个机构不少于30张护理型床位，床均30-40㎡，每床位12万元测算</li>
+                            <li>公办养老机构：床位控制在500张以内，床均42.5-50㎡</li>
+                        </ul>
+                        <h4>托育项目注意事项</h4>
+                        <ul>
+                            <li>普惠托育需满足"一老一小"整体解决方案等5项条件</li>
+                            <li>每市上报项目不超过1个</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-3-2': {
+                category: '三、完整社区建设（社区嵌入式服务设施）',
+                fundType: '超长期特别国债',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>以人口净流入量大、公共服务缺口大的城市为重点：</p>
+                        <ul>
+                            <li><strong>养老</strong>：优先支持公办机构护理型床位建设，医养结合，老年助餐、老年大学等</li>
+                            <li><strong>托育</strong>：托育综合服务中心、公办托育服务机构</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>补助标准、申报条件等与中央预算内投资一致。</p>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>2025年申报时间为2025年2月，具体以当年通知为准。</p>
+                    `}
+                ]
+            },
+            'detail-3-3': {
+                category: '三、完整社区建设（社区嵌入式服务设施）',
+                fundType: '专项债券',
+                sections: [
+                    { title: '一、支持条件', content: `
+                        <p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>
+                    `},
+                    { title: '二、审核要点', content: `
+                        <ul>
+                            <li><strong>行业主管部门</strong>：行业规划政策、建设内容与收益测算</li>
+                            <li><strong>发改部门</strong>：禁止类清单、资本金要求、立项程序、总投资合理性</li>
+                            <li><strong>财政部门</strong>：融资平衡方案、事前绩效评估、收入成本预测依据</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-3-4': {
+                category: '三、完整社区建设（社区嵌入式服务设施）',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li>完善社区基本公共服务设施、便民商业服务设施、公共活动场地等</li>
+                            <li>城市社区嵌入式服务设施建设</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>补充资本金缺口，不超过资本金的<span class="highlight-num">50%</span>。</p>
+                    `}
+                ]
+            },
+            // ===== 四（一）老旧街区厂区 =====
+            'detail-4a-1': {
+                category: '四（一）、老旧街区（厂区）改造提升',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>重点支持<strong>城区常住人口300万以上大城市</strong>，兼顾国家级历史文化名城、老工业城市的示范性项目。</p>
+                        <p>具体内容：配套道路、绿化、照明、供电、消防、安防等基础设施，以及社区综合服务、文化体育、停车等公共服务设施。</p>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：不超过总投资<span class="highlight-num">50%</span></li>
+                            <li>西部地区：不超过总投资<span class="highlight-num">60%</span></li>
+                        </ul>
+                    `},
+                    { title: '三、不列入申报范围', content: `
+                        <ul>
+                            <li>项目与片区更新关联性不强的</li>
+                            <li>景区等非城市片区基础设施</li>
+                            <li>工业园区基础设施</li>
+                            <li>交通场站内部设施设备更新</li>
+                            <li>市政管网建设、信息化建设</li>
+                        </ul>
+                        <p><strong>要求：</strong>需提供项目所属片区的整体更新改造规划或方案（经本级政府或主管部门认可）。</p>
+                    `}
+                ]
+            },
+            'detail-4a-2': {
+                category: '四（一）、老旧街区（厂区）改造提升',
+                fundType: '专项债券',
+                sections: [
+                    { title: '支持条件', content: `
+                        <p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>
+                    `}
+                ]
+            },
+            'detail-4a-3': {
+                category: '四（一）、老旧街区（厂区）改造提升',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: `
+                        <ul>
+                            <li>老旧街区功能转换、业态升级、活力提升</li>
+                            <li>老旧厂区更新改造，工业遗产保护利用</li>
+                            <li>盘活闲置低效厂区、厂房和设施</li>
+                            <li>老旧火车站与周边老旧街区统筹更新</li>
+                        </ul>
+                    `}
+                ]
+            },
+            // ===== 四（二）城中村 =====
+            'detail-4b-1': {
+                category: '四（二）、城中村改造',
+                fundType: '中央/省级财政补助资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li>征收补偿、安置住房建设（购买）</li>
+                            <li>配套基础设施建设</li>
+                            <li>水电路气配套完善</li>
+                            <li>房屋安全和消防安全整治提升等</li>
+                        </ul>
+                        <p><strong>不得用于：</strong>安置住房之外的住房开发及其配套公共服务设施和经营性设施。</p>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>因素法分配：</p>
+                        <ul>
+                            <li>按拆除新建因素和整治提升因素测算</li>
+                            <li>结合财政困难程度调节</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-4b-2': {
+                category: '四（二）、城中村改造',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>支持<strong>城区常住人口300万以上大城市</strong>，重点支持主城区的城中村改造（城镇开发边界内集体用地上的城中村）。</p>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：不超过总投资<span class="highlight-num">70%</span></li>
+                            <li>西部地区：不超过总投资<span class="highlight-num">80%</span></li>
+                        </ul>
+                        <p><strong>注意：</strong>不得用于征地拆迁、异地安置等投资支出。</p>
+                    `}
+                ]
+            },
+            'detail-4b-3': {
+                category: '四（二）、城中村改造',
+                fundType: '专项债券',
+                sections: [
+                    { title: '一、支持条件', content: `
+                        <p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>
+                    `},
+                    { title: '二、特别要求', content: `
+                        <ul>
+                            <li>配套底商可支持，<strong>不支持商业独栋</strong></li>
+                            <li>配套教育、医疗等公共服务设施尽量利用原有设施，新建改建费用由城市政府投入，<strong>不能摊入改造成本</strong></li>
+                        </ul>
+                    `},
+                    { title: '三、收入来源', content: `
+                        <ul>
+                            <li>土地出让收入</li>
+                            <li>住宅出售收入</li>
+                            <li>配套用房出租收入</li>
+                            <li>停车位及充电桩服务收入</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-4b-4': {
+                category: '四（二）、城中村改造',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: '<p>支持城中村改造项目。</p>' }
+                ]
+            },
+            // ===== 五（一）平急两用 =====
+            'detail-5a-1': {
+                category: '五（一）、"平急两用"公共基础设施建设',
+                fundType: '超长期特别国债',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li><strong>应急保障医院</strong>（原"平急两用"医院）建设，位于市级实施方案明确的主建区</li>
+                            <li><strong>城郊大仓基地</strong>等大型仓储物流设施，分级物流配送体系</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>支持比例不超过核算投资的<span class="highlight-num">30%</span>。</p>
+                    `}
+                ]
+            },
+            'detail-5a-2': {
+                category: '五（一）、"平急两用"公共基础设施建设',
+                fundType: '专项债券',
+                sections: [
+                    { title: '支持条件', content: '<p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>' }
+                ]
+            },
+            'detail-5a-3': {
+                category: '五（一）、"平急两用"公共基础设施建设',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: `
+                        <ul>
+                            <li>利用存量闲置房屋和低效用地补齐民生领域公共服务设施短板</li>
+                            <li>推进"平急两用"公共基础设施</li>
+                            <li>完善城市医疗应急服务体系，加强临时安置、应急物资保障</li>
+                            <li>适老化、适儿化改造，无障碍环境建设</li>
+                            <li>普惠托育、养老服务</li>
+                            <li>全民健身场地设施</li>
+                            <li>消费基础设施改造升级</li>
+                            <li>拓展城市公共空间，优化新型公共文化空间</li>
+                        </ul>
+                    `}
+                ]
+            },
+            // ===== 五（三）全民健身 =====
+            'detail-5c-1': {
+                category: '五（三）、全民健身场地设施建设',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li><strong>体育公园</strong>：占地≥10万㎡，绿化率≥65%，至少4类功能</li>
+                            <li><strong>全民健身中心</strong>：至少4类运动项目，不设固定看台</li>
+                            <li><strong>公共体育场</strong>：标准田径跑道和标准足球场</li>
+                            <li><strong>社会足球场</strong>：11人制、7/8人制、5人制</li>
+                            <li><strong>户外运动公共服务设施</strong>：冰雪、水上、山地、航空等</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部60%、西部80%比例支持</li>
+                            <li>体育公园、全民健身中心：单个项目最高<strong>2000万元</strong></li>
+                            <li>健身步道、户外运动设施：单个项目最高<strong>1000万元</strong></li>
+                            <li>标准田径足球场：按平均600万元测算</li>
+                            <li>11人制足球场：按平均300万元测算</li>
+                        </ul>
+                    `},
+                    { title: '三、"十五五"新增方向', content: `
+                        <ul>
+                            <li><strong>群众身边体育运动空间扩容</strong>：单个地级市总额不超过1亿元</li>
+                            <li><strong>高质量户外运动目的地</strong>：每个目的地总额不超过1亿元</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-5c-2': {
+                category: '五（三）、全民健身场地设施建设',
+                fundType: '专项债券',
+                sections: [
+                    { title: '支持条件', content: '<p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>' }
+                ]
+            },
+            'detail-5c-3': {
+                category: '五（三）、全民健身场地设施建设',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '说明', content: '<p>详见本章第一节"平急两用"新型政策性金融工具内容。</p>' }
+                ]
+            },
+            // ===== 五（四）城市公共空间 =====
+            'detail-5d-1': {
+                category: '五（四）、城市公共空间改造利用',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>支持<strong>城区常住人口300万以上大城市</strong>的公共空间提升：</p>
+                        <ul>
+                            <li>老旧交通枢纽等基础设施盘活利用</li>
+                            <li>轨道交通场站与周边地区一体化更新改造</li>
+                            <li>公共设施数字化、智能化、低碳化改造示范项目</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：不超过总投资<span class="highlight-num">50%</span></li>
+                            <li>西部地区：不超过总投资<span class="highlight-num">60%</span></li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-5d-2': {
+                category: '五（四）、城市公共空间改造利用',
+                fundType: '专项债券',
+                sections: [
+                    { title: '支持条件', content: '<p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>' }
+                ]
+            },
+            'detail-5d-3': {
+                category: '五（四）、城市公共空间改造利用',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '说明', content: '<p>详见本章第一节"平急两用"新型政策性金融工具内容。</p>' }
+                ]
+            },
+            // ===== 六（一）地下管线 =====
+            'detail-6a-1': {
+                category: '六（一）、地下管线管网和地下综合管廊',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>居住区范围内及与城市主干网衔接的燃气、排水、供水、供热等地下管网由城市更新专项支持；其余市政管网统筹纳入污染治理专项等。</p>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：不超过总投资<span class="highlight-num">70%</span></li>
+                            <li>西部地区：不超过总投资<span class="highlight-num">80%</span></li>
+                        </ul>
+                        <p>单个项目原则上不超过<strong>1亿元</strong>。</p>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>2026年申报时间为<strong>2025年10月</strong>。</p>
+                    `},
+                    { title: '四、"软建设"要求', content: `
+                        <p>2026年开始需提出"软建设"配套措施：创新体制机制，完善投入机制，建立长效机制。</p>
+                    `}
+                ]
+            },
+            'detail-6a-2': {
+                category: '六（一）、地下管线管网和地下综合管廊',
+                fundType: '超长期特别国债',
+                sections: [
+                    { title: '一、城市地下管网专项', content: `
+                        <ul>
+                            <li>燃气、供热老化管道及设施更新改造</li>
+                            <li>供排水管网改造、漏损治理</li>
+                            <li>互联互通、智能化感知监测设备</li>
+                        </ul>
+                        <p><strong>支持标准：</strong>中部70%、西部80%</p>
+                    `},
+                    { title: '二、沿江污水厂网河湖一体化', content: `
+                        <p>长江经济带城市生活污水处理厂及污水管网新建改造。</p>
+                        <p><strong>支持标准：</strong>按核定总投资<strong>60%</strong>控制</p>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <ul>
+                            <li>城市地下管网专项：2026年提前批<strong>9月</strong>，第二批<strong>12月</strong></li>
+                            <li>沿江污水治理方向：2026年<strong>3月</strong></li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-6a-3': {
+                category: '六（一）、地下管线管网和地下综合管廊',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: `
+                        <ul>
+                            <li>地下空间统筹开发和综合利用</li>
+                            <li>城市燃气、供水、排水、污水、供热等地下管线管网</li>
+                            <li>地下综合管廊建设改造</li>
+                        </ul>
+                    `}
+                ]
+            },
+            // ===== 六（二）生活垃圾 =====
+            'detail-6b-1': {
+                category: '六（二）、生活垃圾处理设施改造升级',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <ul>
+                            <li>生活垃圾焚烧和厨余垃圾处理设施建设和更新改造</li>
+                            <li>飞灰处置设施</li>
+                            <li>生活垃圾分类、收转运设施（各地不超过10个）</li>
+                        </ul>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：<span class="highlight-num">60%</span></li>
+                            <li>西部地区：<span class="highlight-num">70%</span></li>
+                        </ul>
+                        <p>单个项目原则上不超过<strong>1亿元</strong>。</p>
+                    `}
+                ]
+            },
+            'detail-6b-2': {
+                category: '六（二）、生活垃圾处理设施改造升级',
+                fundType: '专项债券',
+                sections: [
+                    { title: '支持条件', content: '<p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>' }
+                ]
+            },
+            'detail-6b-3': {
+                category: '六（二）、生活垃圾处理设施改造升级',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: '<p>支持生活垃圾处理设施改造升级。</p>' }
+                ]
+            },
+            // ===== 七、生态修复 =====
+            'detail-7-1': {
+                category: '七、修复城市生态系统（水环境综合治理）',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围', content: `
+                        <p>与流域水环境质量改善直接相关的综合治理类项目，涵盖5类主体工程：</p>
+                        <ol>
+                            <li>江河水环境综合治理</li>
+                            <li>湖泊水库水环境综合治理</li>
+                            <li>集中式饮用水水源地保护和源头治理</li>
+                            <li>内源污染治理</li>
+                            <li>推进水环境保护治理的其他工程</li>
+                        </ol>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <ul>
+                            <li>中部地区：不超过核定总投资<span class="highlight-num">60%</span></li>
+                            <li>比照西部地区：不超过核定总投资<span class="highlight-num">80%</span></li>
+                        </ul>
+                        <p><strong>注意：</strong>不含项目征地拆迁等费用。</p>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>2026年申报时间为<strong>2026年2月</strong>，具体以当年通知为准。</p>
+                    `},
+                    { title: '四、申报材料', content: `
+                        <ul>
+                            <li>项目资金申请报告</li>
+                            <li>可研、初步设计、概算文本及批复</li>
+                            <li>流域断面水质监测报告、底泥检测报告、社会风险稳定性评估批复</li>
+                            <li>用地、能评、环评、施工许可等前期手续</li>
+                        </ul>
+                    `},
+                    { title: '五、注意事项', content: `
+                        <ul>
+                            <li>建设期限<strong>2年（含）以内</strong>，超1年需明确年度任务和投资额</li>
+                            <li>前期手续齐备</li>
+                            <li>总投资规模<strong>3000万元（含）以上</strong></li>
+                            <li>有负面清单项目的县不得申报</li>
+                            <li>申报主体列入严重失信名单的不得申报</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-7-2': {
+                category: '七、修复城市生态系统（水环境综合治理）',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: `
+                        <ul>
+                            <li>建设连续完整的城市生态基础设施体系</li>
+                            <li>城市基础设施绿色升级</li>
+                            <li>修复受损山体和采煤沉陷区</li>
+                            <li>海绵城市建设</li>
+                            <li>建设用地土壤污染风险管控和修复</li>
+                            <li>城市环城绿廊绿楔绿道建设</li>
+                            <li>增加群众身边的社区公园、口袋公园</li>
+                        </ul>
+                    `}
+                ]
+            },
+            // ===== 八、历史文化 =====
+            'detail-8-1': {
+                category: '八、保护传承城市历史文化（历史文化街区保护提升）',
+                fundType: '中央预算内资金',
+                sections: [
+                    { title: '一、支持范围（文化保护传承利用工程专项）', content: `
+                        <p>历史文化名城和街区等保护提升：</p>
+                        <ul>
+                            <li>历史建筑及公有建筑修缮及抗震加固</li>
+                            <li>传统街巷立面路面整治改造</li>
+                            <li>配套基础设施和公共服务设施建设</li>
+                            <li>消防安防设施建设</li>
+                            <li>数字化展示利用设施建设</li>
+                            <li>依托历史文化街区建设公共文化设施</li>
+                            <li>改造利用历史建筑建设非遗传承展示设施（公益性展演剧场、生产传习用房等）</li>
+                        </ul>
+                        <p><strong>要求：</strong>项目实施范围需列入国家历史文化名城和划定的历史文化街区等相关名录。</p>
+                    `},
+                    { title: '二、支持标准', content: `
+                        <p>实行支持比例和最高限额<strong>双限控制</strong>：</p>
+                        <ul>
+                            <li>中部：不超过核定总投资<span class="highlight-num">60%</span></li>
+                            <li>西部：不超过核定总投资<span class="highlight-num">80%</span></li>
+                        </ul>
+                        <p>历史文化名城和街区等保护提升项目不超过<strong>2亿元</strong>。</p>
+                        <p><strong>注意：</strong>不含土地费用、市政费用，仅为工程建设投资。</p>
+                    `},
+                    { title: '三、申报时间', content: `
+                        <p>每年申报时间为<strong>上一年度11月左右</strong>，具体以当年通知为准。</p>
+                    `},
+                    { title: '四、申报材料', content: `
+                        <ul>
+                            <li>项目资金申请报告</li>
+                            <li>可研、初步设计、概算文本及批复</li>
+                            <li>用地、能评、环评、施工许可等前期手续</li>
+                            <li>资金承诺函</li>
+                            <li>"诚信中国"网站查询截图</li>
+                        </ul>
+                    `}
+                ]
+            },
+            'detail-8-2': {
+                category: '八、保护传承城市历史文化（历史文化街区保护提升）',
+                fundType: '专项债券',
+                sections: [
+                    { title: '支持条件', content: '<p>无负面清单内容，支持比例最高不超过总投资的<span class="highlight-num">80%</span>。</p>' }
+                ]
+            },
+            'detail-8-3': {
+                category: '八、保护传承城市历史文化（历史文化街区保护提升）',
+                fundType: '新型政策性金融工具',
+                sections: [
+                    { title: '支持范围', content: '<p>推进历史文化街区修复和不可移动文物、历史建筑修缮和合理利用。</p>' }
+                ]
+            }
+        };
+
+        // 生成手机端卡片列表
+        function generateCardList() {
+            const cardList = document.getElementById('cardList');
+            let html = '';
+            categories.forEach((cat, index) => {
+                const fundTags = cat.funds.map(fid => {
+                    const fname = fundTypeNames[fid];
+                    const fcolor = fundColors[fname];
+                    return `<span class="fund-tag ${fcolor}" onclick="showDetail('${fid}')">${fname.replace('中央/省级','').replace('资金','').replace('新型','')}</span>`;
+                }).join('');
+                
+                html += `
+                    <div class="category-card ${index < 2 ? 'expanded' : ''}" id="${cat.id}">
+                        <div class="category-card-header" onclick="toggleCard('${cat.id}')">
+                            <span>${cat.name}${cat.sub ? '<br><span style="font-size:11px;color: #e8ecf4;font-weight:normal">' + cat.sub + '</span>' : ''}</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="category-card-body">
+                            <div class="fund-tags-row">${fundTags}</div>
+                            <button class="view-detail-btn" onclick="showCategoryDetail('${cat.id}')">查看全部资金详情 →</button>
+                        </div>
+                    </div>
+                `;
+            });
+            cardList.innerHTML = html;
+        }
+
+        // 展开/收起卡片
+        function toggleCard(cardId) {
+            const card = document.getElementById(cardId);
+            card.classList.toggle('expanded');
+        }
+
+        // 显示分类全部详情
+        function showCategoryDetail(catId) {
+            const cat = categories.find(c => c.id === catId);
+            if (!cat || cat.funds.length === 0) return;
+            // 直接显示第一个资金详情
+            showDetail(cat.funds[0]);
+        }
+
+        // 显示详情页
+        function showDetail(detailId) {
+            const overview = document.getElementById('overviewSection');
+            const searchResults = document.getElementById('searchResults');
+            const detailSection = document.getElementById('detailSection');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailCategory = document.getElementById('detailCategory');
+            const detailContent = document.getElementById('detailContent');
+            
+            const data = detailData[detailId];
+            if (!data) return;
+
+            detailTitle.textContent = data.fundType;
+            detailCategory.textContent = data.category;
+            
+            let html = '';
+            data.sections.forEach(section => {
+                html += `
+                    <div class="detail-card">
+                        <h3>${section.title}</h3>
+                        ${section.content}
+                    </div>
+                `;
+            });
+            detailContent.innerHTML = html;
+
+            overview.style.display = 'none';
+            searchResults.classList.remove('active');
+            detailSection.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 返回总览
+        function showOverview() {
+            const overview = document.getElementById('overviewSection');
+            const searchResults = document.getElementById('searchResults');
+            const detailSection = document.getElementById('detailSection');
+            
+            detailSection.classList.remove('active');
+            searchResults.classList.remove('active');
+            overview.style.display = 'block';
+            document.getElementById('searchInput').value = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 搜索处理
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function performSearch() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!keyword) {
+                showOverview();
+                return;
+            }
+
+            // 搜索所有详情页内容
+            const results = [];
+            
+            // 1. 搜索分类
+            categories.forEach(cat => {
+                const searchText = cat.name + ' ' + cat.sub + ' ' + cat.keywords;
+                if (searchText.toLowerCase().includes(keyword)) {
+                    cat.funds.forEach(fid => {
+                        const fname = fundTypeNames[fid];
+                        results.push({
+                            id: fid,
+                            title: cat.name + ' - ' + fname,
+                            desc: cat.sub || '点击查看详细申报要求'
+                        });
+                    });
+                }
+            });
+
+            // 2. 搜索详情内容
+            Object.keys(detailData).forEach(did => {
+                const d = detailData[did];
+                let contentText = d.category + ' ' + d.fundType;
+                d.sections.forEach(s => {
+                    contentText += ' ' + s.title + ' ' + s.content.replace(/<[^>]+>/g, '');
+                });
+                if (contentText.toLowerCase().includes(keyword)) {
+                    // 避免重复
+                    if (!results.find(r => r.id === did)) {
+                        results.push({
+                            id: did,
+                            title: d.category + ' - ' + d.fundType,
+                            desc: '包含匹配内容，点击查看详情'
+                        });
+                    }
+                }
+            });
+
+            // 展示搜索结果
+            showSearchResults(results, keyword);
+        }
+
+        function showSearchResults(results, keyword) {
+            const overview = document.getElementById('overviewSection');
+            const searchResults = document.getElementById('searchResults');
+            const detailSection = document.getElementById('detailSection');
+            const resultCount = document.getElementById('resultCount');
+            const resultList = document.getElementById('resultList');
+
+            overview.style.display = 'none';
+            detailSection.classList.remove('active');
+            searchResults.classList.add('active');
+
+            resultCount.textContent = `找到 ${results.length} 条相关结果（关键词："${keyword}"）`;
+
+            if (results.length === 0) {
+                resultList.innerHTML = '<p style="color: #e8ecf4;text-align:center;padding:30px;">未找到匹配内容，请尝试其他关键词</p>';
+                return;
+            }
+
+            // 如果只有1条结果，直接跳转
+            if (results.length === 1) {
+                showDetail(results[0].id);
+                return;
+            }
+
+            let html = '';
+            results.forEach(r => {
+                html += `
+                    <div class="result-item" onclick="showDetail('${r.id}')">
+                        <div class="result-item-title">${r.title}</div>
+                        <div class="result-item-desc">${r.desc}</div>
+                    </div>
+                `;
+            });
+            resultList.innerHTML = html;
+        }
+
+        // 初始化
+        generateCardList();
+    </script>
+
+    
+    

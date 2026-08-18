@@ -1,0 +1,1348 @@
+---
+layout: post
+title: "城市更新片区策划报告AI生成完全指南"
+date: 2026-08-13
+category: work
+tags: [片区, 规划, AI]
+excerpt: "城市更新片区策划存在两套并行体系：法定标准版依据住建部《城市更新规划编制导则》（建办科〔2025〕46号），适用于全国通用报审；地方完整版为湖南省城市更新片区策划实践深化版，适用于"
+---
+
+<link rel="stylesheet" href="/assets/theme.css"><link rel="stylesheet" href="/assets/force-dark.css"><link rel="stylesheet" href="/assets/city-override.css"><link rel="stylesheet" href="/assets/site.css">
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e8ecf4;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 35px 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .header .subtitle { font-size: 1rem; opacity: 0.9; }
+        .nav-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #e8ecf4;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover { background: rgba(255,255,255,0.04); color: #818cf8; }
+        .nav-tab.active {
+            color: #818cf8;
+            border-bottom-color: #818cf8;
+            background: rgba(255,255,255,0.10);
+        }
+        .tab-content { display: none; padding: 30px 40px; }
+        .tab-content.active { display: block; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .card h3 {
+            color: #818cf8;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef0ff;
+        }
+        .card h4 {
+            color: #818cf8;
+            font-size: 1rem;
+            margin: 16px 0 10px 0;
+        }
+        .card p { line-height: 1.7; color: #e8ecf4; margin-bottom: 10px; }
+        .card ul { padding-left: 20px; margin-bottom: 10px; }
+        .card li { line-height: 1.8; color: #e8ecf4; margin-bottom: 4px; }
+        .card li strong { color: #e8ecf4; }
+        .outline-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 16px 0;
+        }
+        .outline-col {
+            background: rgba(129,140,248,0.08);
+            border-radius: 10px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .outline-col h4 {
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: -18px -18px 14px -18px;
+            font-size: 0.95rem;
+        }
+        .outline-col ol { padding-left: 22px; }
+        .outline-col ol li {
+            font-weight: 600;
+            color: #818cf8;
+            margin-bottom: 8px;
+        }
+        .outline-col ol li ul {
+            font-weight: normal;
+            color: #e8ecf4;
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+        .outline-col ol li ul li {
+            font-weight: normal;
+            color: #e8ecf4;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eef0f7;
+        }
+        .compare-table th {
+            background: rgba(129,140,248,0.08);
+            color: #818cf8;
+            font-weight: 600;
+        }
+        .compare-table tr:hover { background: rgba(129,140,248,0.08); }
+        .warning-box {
+            background: rgba(245,158,11,0.08);
+            border-left: 4px solid #fbbf24;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        .warning-box h4 { color: #fbbf24; margin-bottom: 8px; }
+        .warning-box ul { padding-left: 20px; }
+        .warning-box li { color: #fbbf24; line-height: 1.7; }
+        .prompt-box {
+            background: #1e1e2e;
+            color: #a6e3a1;
+            padding: 18px;
+            border-radius: 10px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 12px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .prompt-box .comment { color: #6c7086; }
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e8ecf4;
+            margin-bottom: 8px;
+        }
+        .tip-box {
+            background: rgba(52,211,153,0.08);
+            border-left: 4px solid #34d399;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        .tip-box strong { color: #34d399; }
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .tool-card {
+            background: rgba(129,140,248,0.08);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .tool-card h5 {
+            color: #818cf8;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .tool-card ul { padding-left: 18px; }
+        .tool-card li { font-size: 0.88rem; line-height: 1.7; color: #e8ecf4; }
+        .skill-structure {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .skill-module {
+            background: rgba(129,140,248,0.08);
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .skill-module h5 { color: #818cf8; margin-bottom: 6px; font-size: 0.95rem; }
+        .skill-module p { font-size: 0.82rem; color: #e8ecf4; line-height: 1.5; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.88rem;
+        }
+        .data-table th, .data-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .data-table th {
+            background: rgba(129,140,248,0.08);
+            color: #818cf8;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .outline-compare, .two-col-grid, .skill-structure { grid-template-columns: 1fr; }
+            .nav-tabs { flex-wrap: wrap; }
+            .nav-tab { flex: 1 1 50%; font-size: 0.85rem; padding: 12px 8px; }
+            .tab-content { padding: 20px; }
+            .header h1 { font-size: 1.3rem; }
+        }
+    </style><style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e8ecf4;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 35px 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .header .subtitle { font-size: 1rem; opacity: 0.9; }
+        .nav-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #e8ecf4;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover { background: rgba(255,255,255,0.04); color: #818cf8; }
+        .nav-tab.active {
+            color: #818cf8;
+            border-bottom-color: #818cf8;
+            background: rgba(255,255,255,0.10);
+        }
+        .tab-content { display: none; padding: 30px 40px; }
+        .tab-content.active { display: block; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .card h3 {
+            color: #818cf8;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef0ff;
+        }
+        .card h4 {
+            color: #818cf8;
+            font-size: 1rem;
+            margin: 16px 0 10px 0;
+        }
+        .card p { line-height: 1.7; color: #e8ecf4; margin-bottom: 10px; }
+        .card ul { padding-left: 20px; margin-bottom: 10px; }
+        .card li { line-height: 1.8; color: #e8ecf4; margin-bottom: 4px; }
+        .card li strong { color: #e8ecf4; }
+        .outline-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 16px 0;
+        }
+        .outline-col {
+            background: rgba(129,140,248,0.08);
+            border-radius: 10px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .outline-col h4 {
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: -18px -18px 14px -18px;
+            font-size: 0.95rem;
+        }
+        .outline-col ol { padding-left: 22px; }
+        .outline-col ol li {
+            font-weight: 600;
+            color: #818cf8;
+            margin-bottom: 8px;
+        }
+        .outline-col ol li ul {
+            font-weight: normal;
+            color: #e8ecf4;
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+        .outline-col ol li ul li {
+            font-weight: normal;
+            color: #e8ecf4;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eef0f7;
+        }
+        .compare-table th {
+            background: rgba(129,140,248,0.08);
+            color: #818cf8;
+            font-weight: 600;
+        }
+        .compare-table tr:hover { background: rgba(129,140,248,0.08); }
+        .warning-box {
+            background: rgba(245,158,11,0.08);
+            border-left: 4px solid #fbbf24;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        .warning-box h4 { color: #fbbf24; margin-bottom: 8px; }
+        .warning-box ul { padding-left: 20px; }
+        .warning-box li { color: #fbbf24; line-height: 1.7; }
+        .prompt-box {
+            background: #1e1e2e;
+            color: #a6e3a1;
+            padding: 18px;
+            border-radius: 10px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 12px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .prompt-box .comment { color: #6c7086; }
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e8ecf4;
+            margin-bottom: 8px;
+        }
+        .tip-box {
+            background: rgba(52,211,153,0.08);
+            border-left: 4px solid #34d399;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        .tip-box strong { color: #34d399; }
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .tool-card {
+            background: rgba(129,140,248,0.08);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .tool-card h5 {
+            color: #818cf8;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .tool-card ul { padding-left: 18px; }
+        .tool-card li { font-size: 0.88rem; line-height: 1.7; color: #e8ecf4; }
+        .skill-structure {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .skill-module {
+            background: rgba(129,140,248,0.08);
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .skill-module h5 { color: #818cf8; margin-bottom: 6px; font-size: 0.95rem; }
+        .skill-module p { font-size: 0.82rem; color: #e8ecf4; line-height: 1.5; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.88rem;
+        }
+        .data-table th, .data-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+        .data-table th {
+            background: rgba(129,140,248,0.08);
+            color: #818cf8;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .outline-compare, .two-col-grid, .skill-structure { grid-template-columns: 1fr; }
+            .nav-tabs { flex-wrap: wrap; }
+            .nav-tab { flex: 1 1 50%; font-size: 0.85rem; padding: 12px 8px; }
+            .tab-content { padding: 20px; }
+            .header h1 { font-size: 1.3rem; }
+        }
+    </style>
+
+    <div class="container">
+        <div class="header">
+            <h1>城市更新片区策划报告 AI 生成完全指南</h1>
+            <div class="subtitle">基于住建部编制导则 + 湖南省地方实践 · 零基础八步速成</div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab(0)">报告深度解析</div>
+            <div class="nav-tab" onclick="switchTab(1)">AI工具与准备</div>
+            <div class="nav-tab" onclick="switchTab(2)">零基础实战教学</div>
+            <div class="nav-tab" onclick="switchTab(3)">Skill固化范例</div>
+        </div>
+
+        <!-- Tab 1: 报告深度解析 -->
+        <div class="tab-content active">
+            <div class="card">
+                <h3>一、标准大纲结构（双大纲对比模式）</h3>
+                <p>城市更新片区策划存在两套并行体系：<strong>法定标准版</strong>依据住建部《城市更新规划编制导则》（建办科〔2025〕46号），适用于全国通用报审；<strong>地方完整版</strong>为湖南省城市更新片区策划实践深化版，适用于省级专项资金申报和详细方案汇报。</p>
+
+                <div class="outline-compare">
+                    <div class="outline-col">
+                        <h4>法定标准版（编制导则五章）</h4>
+                        <ol>
+                            <li>片区范围划定
+                                <ul>
+                                    <li>划定原则与依据</li>
+                                    <li>片区边界与规模</li>
+                                    <li>上位规划衔接</li>
+                                </ul>
+                            </li>
+                            <li>片区体检评估
+                                <ul>
+                                    <li>指标体系构建</li>
+                                    <li>现状问题诊断</li>
+                                    <li>更新潜力评估</li>
+                                </ul>
+                            </li>
+                            <li>目标与定位
+                                <ul>
+                                    <li>更新目标</li>
+                                    <li>功能定位</li>
+                                    <li>发展策略</li>
+                                </ul>
+                            </li>
+                            <li>更新项目安排
+                                <ul>
+                                    <li>更新模式选择</li>
+                                    <li>项目清单与时序</li>
+                                    <li>资金测算与筹措</li>
+                                </ul>
+                            </li>
+                            <li>设计引导
+                                <ul>
+                                    <li>公共空间设计</li>
+                                    <li>开发强度控制</li>
+                                    <li>详细规划优化建议</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="outline-col">
+                        <h4>地方完整版（湖南实践五大部分）</h4>
+                        <ol>
+                            <li>项目概况
+                                <ul>
+                                    <li>项目背景与必要性</li>
+                                    <li>编制依据</li>
+                                </ul>
+                            </li>
+                            <li>片区体检
+                                <ul>
+                                    <li>指标体系构建+数据采集</li>
+                                    <li>问题短板诊断（基础+特色）</li>
+                                    <li>更新潜力评估</li>
+                                    <li>更新诉求梳理</li>
+                                </ul>
+                            </li>
+                            <li>功能业态
+                                <ul>
+                                    <li>上位传导+目标定位</li>
+                                    <li>功能结构与规模</li>
+                                    <li>业态策划与优化</li>
+                                    <li>重点项目概念规划</li>
+                                </ul>
+                            </li>
+                            <li>更新项目
+                                <ul>
+                                    <li>更新模式与实施路径</li>
+                                    <li>六大更新行动</li>
+                                    <li>时序+投资+资金平衡</li>
+                                </ul>
+                            </li>
+                            <li>设计引导 + 结语 + 附录
+                                <ul>
+                                    <li>六大设计专业要求</li>
+                                    <li>详细规划优化调整</li>
+                                    <li>附录A-D指标与项目表</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h4>双大纲对比分析表</h4>
+                <table class="compare-table">
+                    <tr>
+                        <th>对比维度</th>
+                        <th>法定标准版</th>
+                        <th>地方完整版</th>
+                    </tr>
+                    <tr>
+                        <td>章节数量</td>
+                        <td>5章主体</td>
+                        <td>5大部分 + 结语 + 4个附录</td>
+                    </tr>
+                    <tr>
+                        <td>PPT页数</td>
+                        <td>约30-40页</td>
+                        <td>88页正文 + 附录附表</td>
+                    </tr>
+                    <tr>
+                        <td>指标体系</td>
+                        <td>城市体检基础指标</td>
+                        <td>基础指标（必选）+ 特色指标（按类型选配）</td>
+                    </tr>
+                    <tr>
+                        <td>业态深度</td>
+                        <td>功能定位层面</td>
+                        <td>含现状业态分析、业态规模测算、优化策略、重点项目概念规划</td>
+                    </tr>
+                    <tr>
+                        <td>资金测算</td>
+                        <td>投资估算</td>
+                        <td>总投资+成本收益+多元筹措+资金平衡+社会资本路径</td>
+                    </tr>
+                    <tr>
+                        <td>适用场景</td>
+                        <td>规划体系报审、初步方案</td>
+                        <td>省级专项资金申报、详细实施方案汇报</td>
+                    </tr>
+                    <tr>
+                        <td>核心特色</td>
+                        <td>法定合规、框架简洁</td>
+                        <td>体检更新一体化、运营前置、项目落地性强</td>
+                    </tr>
+                </table>
+
+                <div class="tip-box">
+                    <strong>💡 选择建议：</strong>
+                    申报省级城市更新专项资金、样板片区评审 → 选用<strong>地方完整版</strong>；
+                    纳入国土空间规划体系、规划条件出具 → 选用<strong>法定标准版</strong>；
+                    实际工作中可"完整版做底、标准版报审"，按需裁剪。
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>二、基础资料准备</h3>
+                <p>资料齐备是AI高效产出的前提。建议按以下六大类分类整理，放入项目文件夹对应子目录。</p>
+                <ul>
+                    <li><strong>上位规划类</strong>：国土空间总体规划、城市更新专项规划、控制性详细规划、历史文化保护规划——用于功能定位传导和开发强度校核</li>
+                    <li><strong>政策文件类</strong>：国家/省/市城市更新政策文件、专项资金申报通知、编制导则与工作手册——用于编制依据和申报要求对标</li>
+                    <li><strong>基础数据类</strong>：人口统计数据、用地现状数据、建筑普查数据、房屋安全鉴定报告、公服设施台账——体检指标数据来源</li>
+                    <li><strong>现状调研类</strong>：实地踏勘照片、居民调查问卷、部门访谈纪要、存量资源清单——问题诊断和诉求梳理依据</li>
+                    <li><strong>图纸资料类</strong>：片区航拍图、现状用地图、建筑质量分布图、控规图则、GIS底图——空间分析和配图基础</li>
+                    <li><strong>项目储备类</strong>：已申报项目清单、年度建设计划、资金渠道说明、产权单位资料——项目生成和资金测算基础</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>三、写作核心重点</h3>
+                <p>片区策划报告有其独特的方法论体系，核心遵循以下四大引领原则：</p>
+                <ul>
+                    <li><strong>体检更新一体化推进</strong>：体检诊断问题 → 问题清单传导 → 潜力评估 → 项目生成，形成完整闭环。每一个项目都能回溯到具体体检指标问题，做到"检有所用、策有所据、项有所出"</li>
+                    <li><strong>坚持运营前置、业态先行、市场运作</strong>：不以工程建设为终点，提前谋划更新后的运营模式和业态方向，确保片区可持续发展。产业升级、商业活化类项目必须明确运营主体和盈利模式</li>
+                    <li><strong>有效盘活存量资源</strong>：城市更新的核心是存量提质增效。全面盘点闲置用地、低效楼宇、老旧厂房、国企机关闲置资产，分类制定盘活路径，实现土地价值再释放</li>
+                    <li><strong>多元筹措资金，充分发挥财政资金的高撬动性和强带动性</strong>：中央预算内+专项债+财政+社会资本组合使用，"肥瘦搭配"片区统筹，经营收益反哺公益投入，确保资金可落地</li>
+                </ul>
+                <h4>附加写作原则</h4>
+                <ul>
+                    <li><strong>问题导向，数据支撑</strong>：每个结论必须有数据或案例支撑，杜绝空泛描述。红色预警指标必须对应具体项目解决方案</li>
+                    <li><strong>分级分类，时序清晰</strong>：安全底线类（★★★）近期必须实施，民生补短板类（★★☆）中期推进，品质提升类（★☆☆）远期安排</li>
+                    <li><strong>图文对应，一图一表</strong>：核心问题清单、项目分布等关键内容必须"表格+空间图"双向呈现，编号一一对应</li>
+                    <li><strong>留改拆并举，以留为主</strong>：落实"老城不能再拆"要求，优先微改造、渐进式更新，拆除比严格控制在20%以内</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>四、配图与图纸要求</h3>
+                <p>片区策划是空间性规划成果，图纸占比不低于40%。AI负责文本撰写和数据整理，专业图纸由GIS、CAD、PS等专业软件完成，二者分工协作。</p>
+                <ul>
+                    <li><strong>基础底图类</strong>：片区区位图、现状用地图、建筑年代分布图、建筑质量分级图——表达片区基本空间特征</li>
+                    <li><strong>体检分析类</strong>：人口结构分析图、公服设施覆盖分析图、路网密度分析图、安全隐患空间分布图、核心问题一图一表——可视化呈现体检结果</li>
+                    <li><strong>潜力评估类</strong>：存量资源空间分布图、更新潜力分级分布图——直观展示更新空间</li>
+                    <li><strong>策划方案类</strong>：功能结构示意图、功能空间布局图、重点区域总平面图、留改拆空间分布图——表达方案构思</li>
+                    <li><strong>项目实施类</strong>：项目空间落位图、实施时序甘特图、投资构成图、资金渠道构成图——展示项目安排</li>
+                    <li><strong>设计引导类</strong>：公共空间系统图、开发强度控制图、道路交通优化图——空间管控要求</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 AI协作提示：</strong>
+                    AI可以生成图纸说明文字、标注要点、整理图纸目录；空间分析图和方案图需由规划师用专业软件完成。汇报PPT的版式美化、图表配色、数据卡片设计可由AI辅助生成。
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>五、最终成果交付</h3>
+                <p>完整的片区策划成果包包含文本、图纸、附件三大部分，满足评审和申报双重需求。</p>
+                <ul>
+                    <li><strong>汇报PPT（主成果）</strong>：88页标准模版，五大部分+结语，图文并茂，用于方案汇报和专家评审</li>
+                    <li><strong>文本说明（Word版）</strong>：约3-4万字正式报告文本，章节与PPT对应，内容更详尽，用于存档和报审</li>
+                    <li><strong>图集（PDF）</strong>：全套图纸单独成册，含区位图、现状图、分析图、方案图，A3或A0规格</li>
+                    <li><strong>附录A：基础指标完整清单</strong>：22类基础指标，含含义、体检方法、评价标准、现状值、问题结论</li>
+                    <li><strong>附录B：特色指标完整清单</strong>：12类特色指标（完整社区/老旧街区/老旧厂房/城中村），按需选配</li>
+                    <li><strong>附录C：引领四原则原文索引</strong>：四大原则在各章节的体现位置对照表</li>
+                    <li><strong>附录D：项目包总表（完整版）</strong>：所有子项目详细清单，含投资、资金来源、改造性质、优先序、对应行动、时序</li>
+                    <li><strong>申报附表（按需）</strong>：省级专项资金申报附表、重点更新片区情况表等申报材料</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>六、评审关键要点</h3>
+                <p>片区策划方案评审重点关注合规性、逻辑性、落地性三大维度，以下是专家评审和资金审查的核心关注点：</p>
+                <ul>
+                    <li><strong>上位规划衔接性</strong>：是否与城市更新专项规划对本片区的定位一致，更新方式是否符合划定要求，控规指标是否衔接</li>
+                    <li><strong>体检问题传导链</strong>：体检指标→问题清单→潜力评估→项目意向是否形成清晰闭环，每个项目是否有对应的体检问题来源</li>
+                    <li><strong>安全底线达标率</strong>：C/D级危房、消防隐患、管网老化等安全类问题是否全部纳入近期项目，中央预算内资金使用是否合规</li>
+                    <li><strong>更新方式合理性</strong>：留改拆比例是否符合政策要求（拆除比≤20%），是否落实"微改造、渐进式"原则，是否存在大拆大建</li>
+                    <li><strong>项目可实施性</strong>：项目清单是否具体到子项目级，投资估算是否合理，产权是否清晰，实施主体是否明确</li>
+                    <li><strong>资金平衡可行性</strong>：多元资金渠道是否有政策依据，社会资本参与是否有合理回报路径，片区统筹平衡方案是否成立</li>
+                    <li><strong>运营前置落实度</strong>：经营性项目是否明确运营模式和业态方向，是否有市场主体参与意向，可持续性如何</li>
+                    <li><strong>特色指标适配性</strong>：是否根据片区类型（历史街区/老旧厂区/城中村/综合片区）选配了对应的特色指标，体检是否精准</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>附：片区体检指标体系总览</h3>
+                <p>片区体检采用"基础指标+特色指标"双层体系，基础指标为通用必选，特色指标按片区类型选配。</p>
+                <table class="data-table">
+                    <tr>
+                        <th>层级</th>
+                        <th>一级分类</th>
+                        <th>二级分类数</th>
+                        <th>指标数量</th>
+                        <th>核心指标举例</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="7"><strong>基础指标<br>（通用必选）</strong></td>
+                        <td>基础本底</td>
+                        <td>3</td>
+                        <td>12</td>
+                        <td>常住人口、低效用地占比、C/D级危房占比、建筑年代</td>
+                    </tr>
+                    <tr>
+                        <td>房屋安全与品质</td>
+                        <td>3</td>
+                        <td>11</td>
+                        <td>C/D级危房数、外墙脱落风险栋数、加装电梯适配栋数</td>
+                    </tr>
+                    <tr>
+                        <td>小区改造和治理</td>
+                        <td>4</td>
+                        <td>16</td>
+                        <td>小区消防设施完好率、专业化物业覆盖率、停车充电缺口</td>
+                    </tr>
+                    <tr>
+                        <td>公共服务设施</td>
+                        <td>4</td>
+                        <td>14</td>
+                        <td>15分钟生活圈覆盖率、养老设施覆盖率、公服缺口总数</td>
+                    </tr>
+                    <tr>
+                        <td>基础设施提质改造</td>
+                        <td>2</td>
+                        <td>21</td>
+                        <td>路网密度、雨污分流覆盖率、人均避难场所面积</td>
+                    </tr>
+                    <tr>
+                        <td>修复城市生态系统</td>
+                        <td>2</td>
+                        <td>12</td>
+                        <td>人均绿地面积、口袋公园缺口、黑臭水体点位</td>
+                    </tr>
+                    <tr>
+                        <td>保护传承城市历史文化</td>
+                        <td>4</td>
+                        <td>10</td>
+                        <td>历史建筑保护完好率、文化遗产调查覆盖率</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4"><strong>特色指标<br>（按类型选配）</strong></td>
+                        <td>完整社区建设</td>
+                        <td>3</td>
+                        <td>7</td>
+                        <td>居家适老化改造需求、普惠托育学位缺口</td>
+                    </tr>
+                    <tr>
+                        <td>老旧街区更新</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>街区商铺空置率、特色业态适配率</td>
+                    </tr>
+                    <tr>
+                        <td>老旧厂房更新</td>
+                        <td>3</td>
+                        <td>8</td>
+                        <td>厂房结构适配转换率、产业创新能力指数</td>
+                    </tr>
+                    <tr>
+                        <td>城中村更新</td>
+                        <td>4</td>
+                        <td>12</td>
+                        <td>住房成套率、集体经济收入、闲置土地面积</td>
+                    </tr>
+                    <tr>
+                        <td><strong>合计</strong></td>
+                        <td>11大类</td>
+                        <td>34小类</td>
+                        <td>约100+项</td>
+                        <td>综合型片区一般选用60-80项</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: AI工具与准备 -->
+        <div class="tab-content">
+            <div class="card">
+                <h3>一、AI工具对比卡片</h3>
+                <div class="two-col-grid">
+                    <div class="tool-card">
+                        <h5>🟢 豆包（推荐首选）</h5>
+                        <ul>
+                            <li>本地文件夹深度关联，直接读取项目资料</li>
+                            <li>支持PPT/Word/Excel/PDF多格式文件解析</li>
+                            <li>AI画布功能可直接编辑PPT版式和图表</li>
+                            <li>提示词工程灵活，可加载自定义Skill指令</li>
+                            <li>长文本处理能力强，适合报告分章撰写</li>
+                            <li>支持多轮迭代修改，版本追踪清晰</li>
+                            <li>数据表格自动生成，指标统计零差错</li>
+                        </ul>
+                    </div>
+                    <div class="tool-card">
+                        <h5>🔵 WorkBuddy（备选）</h5>
+                        <ul>
+                            <li>深度集成飞书生态，文档协作便利</li>
+                            <li>飞书表格数据联动，适合项目台账管理</li>
+                            <li>定时任务功能，可设置自动数据更新</li>
+                            <li>团队知识库共享，多人协作效率高</li>
+                            <li>适合已有飞书工作流的团队使用</li>
+                            <li>消息总结、会议纪要等办公辅助强</li>
+                            <li>与企业OA系统对接更顺畅</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tip-box">
+                    <strong>💡 选型建议：</strong>
+                    个人项目、本地文件为主、需要PPT/Word产出 → 选豆包；
+                    团队协作、飞书体系内工作、重流程管理 → 选WorkBuddy。
+                    本指南以豆包为默认工具编写。
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>二、AI相比人工的优势</h3>
+                <ul>
+                    <li><strong>效率提升5-10倍</strong>：传统人工撰写一份片区策划需2-3周，AI辅助下3-5天可完成初稿，大幅缩短编制周期</li>
+                    <li><strong>数据零差错</strong>：指标统计、投资汇总、面积测算等数据工作AI自动计算，避免人工计算错误和前后不一致</li>
+                    <li><strong>格式规范统一</strong>：标题层级、术语表述、表格格式自动统一，解决多人协作风格不一致问题</li>
+                    <li><strong>系统全面无遗漏</strong>：基于标准大纲自动检查章节完整性，确保八大更新方向、六大行动等要点全覆盖</li>
+                    <li><strong>附件自动生成</strong>：指标清单、项目包总表、资金测算表等附件可从正文数据自动派生，无需重复录入</li>
+                    <li><strong>经验可复用</strong>：将成熟项目的编制方法固化为Skill，新项目一键调用，质量稳定不依赖个人经验</li>
+                    <li><strong>降低专业门槛</strong>：新人借助标准模版和AI提示词，也能快速产出符合规范的策划方案初稿</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>三、使用前提条件警示框</h3>
+                <div class="warning-box">
+                    <h4>⚠️ 五大硬性前提，缺一不可</h4>
+                    <ul>
+                        <li><strong>数据必须真实，严禁编造</strong>：AI只能基于你提供的数据进行分析和撰写，所有现状数据、指标数值、投资金额必须来自真实调研和部门统计，AI不会也不能凭空生成数据</li>
+                        <li><strong>专业判断不可替代</strong>：更新方式选择、功能定位决策、项目优先级排序等核心专业判断必须由规划师把关，AI只提供分析辅助和方案草拟</li>
+                        <li><strong>三大节点必须人工确认</strong>：①大纲框架确认 ②核心数据确认 ③项目清单与资金测算确认，这三个节点出错会导致全篇方向性错误</li>
+                        <li><strong>资料质量决定产出质量</strong>：输入资料越完整、数据越详实，AI产出质量越高。资料残缺时AI只能产出框架性内容，需人工补充</li>
+                        <li><strong>最终交付前必须通读审核</strong>：AI生成的文本可能存在术语不准确、逻辑跳跃、数据引用错位等问题，正式交付前必须人工全文通读校核</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>四、资料准备清单表格</h3>
+                <table class="compare-table">
+                    <tr>
+                        <th style="width:50%">基础必备（缺一不可）</th>
+                        <th style="width:50%">辅助提升（有则更好）</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>1. 上位规划文件</strong><br>
+                            城市更新专项规划（片区定位页）、控规图则、总规摘要
+                        </td>
+                        <td>
+                            <strong>1. 历史同类项目</strong><br>
+                            已完成的相邻片区策划方案，作为风格和深度参考
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>2. 基础数据台账</strong><br>
+                            人口数据、用地面积、建筑栋数/面积、公服设施清单、危房台账
+                        </td>
+                        <td>
+                            <strong>2. GIS空间分析结果</strong><br>
+                            覆盖率分析、密度分析、空间分布统计，直接引用数据
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>3. 政策文件汇编</strong><br>
+                            最新国家/省/市城市更新政策、专项资金申报通知、编制导则
+                        </td>
+                        <td>
+                            <strong>3. 居民问卷原始数据</strong><br>
+                            问卷答卷Excel，AI可自动统计分析和生成图表
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>4. 存量资源清单</strong><br>
+                            闲置用地、老旧厂房、国企闲置资产、文保单位清单
+                        </td>
+                        <td>
+                            <strong>4. 部门访谈纪要</strong><br>
+                            各部门诉求和意见，转化为更新诉求梳理章节内容
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>5. 项目储备清单</strong><br>
+                            已申报项目、计划实施项目、资金渠道初步意向
+                        </td>
+                        <td>
+                            <strong>5. 投资估算单价指标</strong><br>
+                            当地各类改造工程单位造价，用于投资测算参考
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>6. 片区基本信息</strong><br>
+                            片区名称、四至范围、面积、所属行政区、编制单位
+                        </td>
+                        <td>
+                            <strong>6. 特色资源资料</strong><br>
+                            历史文化、产业特色、地标建筑等，用于特色定位提炼
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 3: 零基础实战教学 -->
+        <div class="tab-content">
+            <div class="card">
+                <h3>开始前准备工作</h3>
+                <ul>
+                    <li>在电脑上建立项目文件夹，命名格式：<code>【城市】【片区名】城市更新策划</code></li>
+                    <li>建立子目录：<code>01-上位规划</code>、<code>02-基础数据</code>、<code>03-政策文件</code>、<code>04-调研资料</code>、<code>05-图纸</code>、<code>06-成果</code></li>
+                    <li>在根目录创建 <code>项目说明.txt</code>，写明：片区名称、所属城市、片区类型、面积、人口、核心特色、本次编制目的</li>
+                    <li>将所有参考资料放入对应子目录，文件命名清晰（含日期和版本号）</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">1</span>创建项目：建立本地文件夹并关联豆包</div>
+                <p><strong>任务目标：</strong>让AI认识你的项目，加载所有基础资料，建立工作上下文。</p>
+                <p><strong>操作说明：</strong>打开豆包，选择"本地文件夹"模式，关联你的项目根目录。先让AI通读所有政策文件和上位规划，建立对本项目的基本认知。</p>
+                <div class="prompt-box"><span class="comment"># 第一步：项目初始化提示词</span>
+你现在是资深城市规划工程师，负责编制本片区城市更新策划方案。
+
+请先读取项目文件夹中的所有资料，重点关注：
+1. 城市更新专项规划中对本片区的定位和更新方式要求
+2. 相关政策文件中的编制要求和资金申报要点
+3. 基础数据中的人口、用地、建筑等核心指标
+
+读取完成后，请输出一份《项目初步认知简报》，包含：
+- 片区基本情况摘要
+- 上位规划对本片区的核心传导要求
+- 本次策划需要重点回应的政策要点
+- 初步判断本片区属于哪种类型（综合型/历史街区型/老旧厂区型/城中村型）</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    这一步不要急着写正文，先让AI把资料"读透"。如果AI输出的认知简报有偏差，及时纠正，不然后面全错。
+                    片区类型判断很重要，直接决定特色指标选哪些。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">2</span>数据整理：体检指标结构化汇总</div>
+                <p><strong>任务目标：</strong>将分散的各类现状数据整理成标准化的体检指标数据表，为后续问题诊断和项目生成打基础。</p>
+                <p><strong>操作说明：</strong>把你的基础数据台账（Excel最好）提供给AI，让AI按照"基础指标+特色指标"体系进行归类整理，生成指标统计表。每项指标包含：指标名称、性质（必选/选用）、现状值、评价结论（优秀/良好/待提升/红色预警）。</p>
+                <div class="prompt-box"><span class="comment"># 第二步：体检指标数据整理提示词</span>
+请根据我提供的基础数据，按照城市更新片区体检指标体系，整理生成《片区体检指标数据表》。
+
+要求：
+1. 分为"基础指标"和"特色指标"两大板块
+2. 基础指标按7大类（基础本底/房屋安全/小区治理/公共服务/基础设施/生态修复/历史文化）分类
+3. 特色指标根据本片区类型选配（完整社区/老旧街区/老旧厂房/城中村）
+4. 每项指标包含：指标名称、性质（必选/选用）、现状值、单位、评价标准、评价结论
+5. 红色预警指标用🔴标注，作为后续项目生成的优先依据
+6. 输出为Markdown表格格式，方便后续引用
+
+数据来源以我提供的Excel台账为准，缺失数据标注"待补充"，不要编造数值。</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    数据缺失很正常，标注清楚即可，千万不要让AI"估计一个"。红色预警指标是安全底线类项目的直接来源，务必准确。
+                    这一步产出的指标表，后续P07指标一览页、附录A/B都可以直接复用。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">3</span>大纲构建：确认报告章节框架</div>
+                <p><strong>任务目标：</strong>确定本次方案使用哪套大纲（完整版/标准版），明确各章节篇幅分配和核心内容，形成写作路线图。</p>
+                <p><strong>操作说明：</strong>根据项目目的（申报资金/规划报审/内部讨论）选择大纲版本，与AI共同确认章节框架和每章核心内容。完整版按五大部分88页模版，标准版按五章结构。</p>
+                <div class="prompt-box"><span class="comment"># 第三步：大纲构建提示词</span>
+本次项目目的是【省级专项资金申报/规划报审/方案汇报】，请选择合适的大纲版本，输出完整的章节框架。
+
+要求：
+1. 明确说明选择【地方完整版/法定标准版】的理由
+2. 细化到三级标题，每章写明核心内容和预计页数
+3. 标注哪些章节是重点章节（需要详细展开）
+4. 标注特色指标选配方案（选哪几类、为什么）
+5. 说明八大更新方向在本项目中如何体现
+6. 四大引领原则（体检一体化/运营前置/盘活存量/多元资金）分别在哪些章节重点体现
+
+请以表格形式输出：章节编号 | 章节名称 | 核心内容 | 预计页数 | 重要程度</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    大纲确认是第一个关键人工审核节点！务必仔细核对，章节顺序不能乱，重点章节不能漏。
+                    申报资金的项目，"更新项目"和"资金测算"部分必须重点展开；规划报审的项目，"设计引导"和"规划优化"部分要详细。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">4</span>分章撰写：核心章节逐章撰写</div>
+                <p><strong>任务目标：</strong>按照确认的大纲，逐章生成报告正文内容。建议从体检部分开始，依次完成项目概况、片区体检、功能业态、更新项目、设计引导。</p>
+                <p><strong>操作说明：</strong>一章一章来，不要一次性让AI写全文。每写完一章检查确认后再写下一章。每章内容要包含数据、分析、结论三层结构，不能只有描述没有判断。</p>
+                <div class="prompt-box"><span class="comment"># 第四步：分章撰写提示词（以片区体检-问题诊断为例）</span>
+请撰写第二部分"片区体检"中的"问题短板诊断"章节（基础指标部分）。
+
+写作要求：
+1. 按7大类基础指标逐类撰写，每类一页PPT的文字量
+2. 每页格式统一：
+   - 页面标题（一级分类｜二级分类）
+   - 关键结论句（一句话总结本页核心发现，用数据说话）
+   - 每个指标分四要素：体检内容说明 + 现状数据 + 问题分析 + 总结结论
+   - 红色预警指标突出标注🔴
+3. 所有数据引用第二步生成的指标数据表，数值保持一致
+4. 问题诊断要具体，不能泛泛而谈，要指出"哪里有问题、有多少、影响是什么"
+5. 每个问题都要隐含后续的更新方向，为项目生成埋下伏笔
+6. 语言风格：专业、客观、数据驱动，符合政府汇报材料调性
+
+注意：只写文字内容，图纸说明标注【配图：XXX图】即可。</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    每章写完后检查：①数据是否和第二步一致 ②逻辑是否通顺 ③有没有空话套话。
+                    体检章节是整个报告的基础，写得越扎实，后面的项目生成越顺。记住"体检→问题→项目"的传导链。
+                    功能业态章节要特别注意"运营前置"原则，不能只画饼，要写清楚谁来运营、怎么盈利。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">5</span>专项分析：特色分析模块深化</div>
+                <p><strong>任务目标：</strong>完成更新潜力评估、重点项目概念规划、社会资本参与路径等特色专项模块，这些是体现方案深度的关键章节。</p>
+                <p><strong>操作说明：</strong>基于问题诊断结果，进行潜力转化分析；基于功能定位，策划重点项目概念方案；基于投资测算，设计多元资金和社会资本路径。</p>
+                <div class="prompt-box"><span class="comment"># 第五步：专项分析提示词（以更新潜力评估为例）</span>
+请基于前面的问题短板诊断，撰写"更新潜力评估"章节。
+
+写作要求：
+1. 第一页：从问题到潜力的逻辑转化
+   - 列出5类核心问题对应的更新潜力方向，做成对照表
+   - 说明"短板即是更新空间"的逻辑
+2. 第二页：存量资源总览
+   - 分类盘点：土地资源、建筑资源、历史文化资源、国企机关资源
+   - 每类写清规模、分布、利用现状、盘活潜力
+   - 用数据卡片形式呈现核心数字
+3. 第三页：更新潜力分级
+   - 高/中/低三级潜力区的判定标准
+   - 各级的规模统计和空间分布说明
+   - 各级对应的更新策略和实施时序
+4. 第四页：潜力转化与更新方向指引
+   - 按近期/中期/远期三个时间维度
+   - 每个阶段的重点实施内容和核心目标
+5. 所有数据与前面问题诊断保持一致，体现问题→潜力的传导
+
+语言风格：从"问题视角"转向"机遇视角"，展现更新价值和实施可行性。</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    重点项目概念规划是方案亮点，要写清楚功能定位、业态组合、总平面图说明、效果图意向。如果有具体案例参考，可以一并提供给AI。
+                    资金章节是申报评审重点，每个资金渠道都要有政策依据，不能凭空设想。社会资本部分要算清楚回报率和回收期。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">6</span>核心产出：项目清单与资金测算</div>
+                <p><strong>任务目标：</strong>生成核心交付物——项目包总表和资金测算表。这是整个策划方案落地性的集中体现，也是评审最关注的部分。</p>
+                <p><strong>操作说明：</strong>基于体检问题和更新潜力，系统生成项目清单，按区域打包成项目包，每个项目包分解为子项目，标注投资、资金来源、改造性质、优先序、对应行动、时序。</p>
+                <div class="prompt-box"><span class="comment"># 第六步：项目清单生成提示词</span>
+请基于全部体检问题和更新方向，系统生成《片区更新项目包总表》。
+
+生成规则：
+1. 按空间区域划分项目包（如XX社区、XX厂区、XX街区等），每个项目包包含多个子项目
+2. 每个子项目必须对应具体的体检问题，体现"问题导向、检有所出"
+3. 子项目字段包括：序号、项目名称、子项目名、建设内容、实施范围、投资（万元）、资金来源（中央/专项债/财政/社会资本）、改造性质（留/改/拆/新建）、优先序（★★★/★★☆/★☆☆）、对应行动、时序（近期/中期/远期）
+4. 八大更新方向必须全覆盖：①既有建筑改造 ②老旧小区整治 ③完整社区建设 ④老旧街区厂区城中村改造 ⑤城市功能完善 ⑥基础设施改造 ⑦生态修复 ⑧历史文化保护
+5. 六大行动分类：筑牢安全底线、补齐民生短板、完善城市功能、推动产业升级、传承历史文化、提升环境品质
+6. 优先序规则：安全类★★★近期、民生类★★☆中期、品质类★☆☆远期
+7. 资金来源匹配规则：纯公益→中央+财政、有收益公益→专项债、经营性→社会资本
+
+先输出项目总览（项目包数量、子项目总数、总投资），再输出完整表格。
+投资金额可按同类项目经验估算，标注"暂估"，后续由造价专业校核。</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    这是第二个关键人工审核节点！项目清单直接决定方案可行性，必须逐条核对。
+                    检查要点：①安全类问题是否全部有对应项目 ②投资量级是否合理 ③资金渠道是否有政策依据 ④时序安排是否符合实施逻辑
+                    生成完项目表后，让AI自动汇总生成六大行动页、时序页、投资页、资金页，数据自动联动，不用手动统计。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">7</span>全文统稿：首尾章节+质检优化</div>
+                <p><strong>任务目标：</strong>完成封面、目录、结语等首尾章节，进行全文质量检查，统一术语、核对数据、理顺逻辑，形成完整初稿。</p>
+                <p><strong>操作说明：</strong>撰写项目概况（背景、必要性、编制依据）和结语，然后让AI做一次全文质检，检查数据一致性、术语统一性、逻辑连贯性、格式规范性。</p>
+                <div class="prompt-box"><span class="comment"># 第七步：全文统稿与质检提示词</span>
+请对已完成的所有章节进行统稿和质量检查，并撰写首尾章节。
+
+一、撰写首尾章节
+1. 项目背景：国家-省-市三级政策背景，突出本片区的政策机遇
+2. 项目必要性：从安全、民生、存量、发展、民意五个维度论述
+3. 编制依据：政策文件+编制手册+相关规划三类表格
+4. 结语：总结四大引领原则的落实情况，提炼核心数据，说明下一步工作
+
+二、全文质检
+1. 数据一致性检查：所有指标数据、投资数字、面积数据前后是否一致
+2. 术语统一性检查：更新方向名称、行动名称、指标名称是否统一
+3. 逻辑连贯性检查：体检问题→项目清单的对应关系是否完整
+4. 格式规范性检查：标题层级、表格格式、标点符号是否统一
+5. 四大引领原则是否在各章节充分体现
+6. 红色预警指标是否全部有对应项目解决方案
+
+三、输出质检报告
+列出发现的问题和修改建议，按严重程度分级（必须修改/建议优化/可选提升）。</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    AI自检不能代替人工审核，这只是第一轮初筛。关键数据和核心逻辑必须人工再核对一遍。
+                    编制依据页的文件名称和文号要准确，评审专家会查。政策文件要用最新版本。
+                    结语要精炼有力，核心数据拎出来，给人留下深刻印象。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">8</span>成果交付：PPT+全套附件</div>
+                <p><strong>任务目标：</strong>将所有内容整理成标准格式的PPT汇报文件和Word文本，生成全套附录附表，打包交付。</p>
+                <p><strong>操作说明：</strong>按88页标准PPT模版格式整理内容，生成附录A-D四个附表，统一排版格式。使用AI画布进行PPT版式美化和图表制作。</p>
+
+                <h4>PPT格式规范</h4>
+                <ul>
+                    <li><strong>页面设置</strong>：16:9宽屏，页边距上下1.5cm、左右2cm</li>
+                    <li><strong>字体规范</strong>：标题微软雅黑Bold 28pt，关键结论句Bold 20pt，正文Regular 14pt</li>
+                    <li><strong>配色方案</strong>：主色深蓝#1A5276、辅色中蓝#2E86C1、警示红#E74C3C、达标绿#27AE60</li>
+                    <li><strong>版式要求</strong>：每页一个关键结论句置顶，图文比约6:4，数据卡片化呈现</li>
+                    <li><strong>图表编号</strong>：图X-X、表X-X，按章节编号，全文统一</li>
+                    <li><strong>页码目录</strong>：底部居中页码，目录页标注对应页码</li>
+                </ul>
+
+                <h4>附件清单</h4>
+                <ul>
+                    <li>附录A：基础指标完整清单（含体检说明与评价标准）</li>
+                    <li>附录B：特色指标完整清单（按片区类型选配）</li>
+                    <li>附录C：引领四原则原文索引对照表</li>
+                    <li>附录D：项目包总表（完整版Excel）</li>
+                </ul>
+
+                <div class="prompt-box"><span class="comment"># 第八步：成果交付提示词</span>
+请将全部内容整理为正式交付格式，生成以下成果：
+
+1. PPT汇报大纲（按88页标准模版）
+   - 每页标注：页面标题、关键结论句、核心内容要点、配图说明
+   - 严格按照五大部分结构，扉页、目录、结语齐全
+   - 附录A-D单独列出
+
+2. Word文本目录结构
+   - 对应PPT章节，展开为详细文字版目录
+   - 标注每节预计字数
+
+3. 生成全套附录附表
+   - 附录A：基础指标表（22类，含含义/体检方法/评价标准/现状值/结论）
+   - 附录B：特色指标表（按需选配的类别）
+   - 附录D：项目包完整总表（从第六步数据自动派生）
+
+4. 排版格式说明
+   - 明确字体、字号、颜色、行距等格式规范
+   - 说明数据卡片、对比表格、流程图等常用版式的制作要点
+
+输出完成后，说明如何使用AI画布功能进行PPT的可视化制作和版式美化。</div>
+                <div class="tip-box">
+                    <strong>💡 新手提示：</strong>
+                    PPT制作建议：先用AI生成每页的文字内容和版式说明，再导入AI画布进行可视化排版。图表类内容（饼图、柱状图、甘特图）可以用AI画布自动生成。
+                    最终交付前务必人工通读全文，检查是否有AI生成的"正确的废话"和逻辑跳跃。专业术语和地方特定表述要人工校核。
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Skill固化范例 -->
+        <div class="tab-content">
+            <div class="card">
+                <h3>一、什么是 Skill + 为什么要固化</h3>
+                <h4>Skill 是什么</h4>
+                <p>Skill 是将一整套成熟的工作方法浓缩提炼成的启动指令。相当于把资深规划师的经验、习惯、判断标准写成一份详细的"操作手册"，AI读取后就能按照这套方法来工作，产出质量稳定、风格统一的成果。</p>
+
+                <h4>为什么要固化成 Skill</h4>
+                <ul>
+                    <li><strong>经验沉淀</strong>：做完一个项目就把方法总结下来，避免每次从零开始，个人经验转化为团队资产</li>
+                    <li><strong>新人快速上手</strong>：新人不需要长时间培训，加载Skill就能产出符合团队标准的初稿，大幅降低学习成本</li>
+                    <li><strong>质量稳定可控</strong>：所有项目遵循同一套编制方法和质量标准，不会因为编制人不同而质量参差不齐</li>
+                    <li><strong>持续迭代优化</strong>：每做完一个项目都可以更新Skill版本，把新的经验和评审反馈加进去，越用越好</li>
+                    <li><strong>团队协作统一</strong>：多人协作的项目，大家用同一个Skill，术语、格式、逻辑天然一致，减少统稿工作量</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>二、Skill 生成方法（三步提炼法）</h3>
+                <ol>
+                    <li><strong>第一步：项目收尾复盘总结</strong>
+                        <p>项目完成后，人工复盘整个编制过程中的经验教训：哪些章节写得好、哪些走了弯路、评审专家提了什么意见、有哪些可以标准化的做法。整理成文字要点。</p>
+                    </li>
+                    <li><strong>第二步：AI自动整理提炼</strong>
+                        <p>把复盘要点和项目最终成果一起交给AI，让AI按照六大模块结构自动整理成结构化的Skill指令。AI会把零散的经验系统化、规范化。</p>
+                    </li>
+                    <li><strong>第三步：生成 skill.md 文件</strong>
+                        <p>人工审核调整AI生成的Skill，补充专业判断和隐性经验，保存为 <code>skill.md</code> 文件，放在项目根目录或团队知识库中。下次新项目直接调用。</p>
+                    </li>
+                </ol>
+                <div class="tip-box">
+                    <strong>💡 版本管理建议：</strong>
+                    Skill文件命名加上版本号，如 <code>片区策划-skill-v1.0.md</code>，每次重大更新递增版本号。
+                    可以按片区类型细分：综合型、历史街区型、老旧厂区型各有专门的Skill版本。
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>三、Skill 完整构成（六大模块）</h3>
+                <div class="skill-structure">
+                    <div class="skill-module">
+                        <h5>① 角色身份设定</h5>
+                        <p>定义AI的专业身份、经验背景、工作视角，建立专业调性</p>
+                    </div>
+                    <div class="skill-module">
+                        <h5>② 核心工作原则</h5>
+                        <p>四大引领原则+写作方法论，确保方向不偏、特色鲜明</p>
+                    </div>
+                    <div class="skill-module">
+                        <h5>③ 标准工作流程</h5>
+                        <p>八步标准编制流程，每步的输入输出和质量控制点</p>
+                    </div>
+                    <div class="skill-module">
+                        <h5>④ 写作规范要求</h5>
+                        <p>语言风格、段落结构、数据呈现、术语统一等写作标准</p>
+                    </div>
+                    <div class="skill-module">
+                        <h5>⑤ 输出格式标准</h5>
+                        <p>PPT/Word/表格的格式规范、版式要求、命名规则</p>
+                    </div>
+                    <div class="skill-module">
+                        <h5>⑥ 质量检查节点</h5>
+                        <p>三大人工确认节点+最终交付质检清单，把控成果质量</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>四、完整 Skill 启动指令示范</h3>
+                <div class="prompt-box"><span class="comment"># 城市更新片区策划编制 Skill v1.0</span>
+<span class="comment">## 【角色身份设定】</span>
+你是拥有10年经验的资深城市规划工程师，专注于城市更新片区策划编制工作。
+你深度理解住建部《城市更新规划编制导则》和湖南省城市更新政策体系，
+熟悉片区体检、功能策划、项目生成、资金测算全流程。
+你的写作风格：数据驱动、问题导向、专业严谨，符合政府汇报材料调性。
+
+<span class="comment">## 【核心工作原则】</span>
+1. 体检更新一体化推进：体检→问题→潜力→项目形成完整闭环，每个项目必须有对应的体检问题来源
+2. 运营前置、业态先行、市场运作：经营性项目必须明确运营模式和盈利路径，不做无运营的空心策划
+3. 有效盘活存量资源：全面盘点闲置资产，分类制定盘活路径，释放土地和建筑价值
+4. 多元筹措资金：中央+专项债+财政+社会资本组合，片区统筹肥瘦搭配，经营反哺公益
+5. 留改拆并举以留为主：拆除比控制在20%以内，优先微改造渐进式更新
+6. 分级分类时序清晰：安全底线(★★★)近期、民生补短板(★★☆)中期、品质提升(★☆☆)远期
+
+<span class="comment">## 【标准工作流程】</span>
+第一步：项目初始化 → 读取资料，输出项目认知简报
+第二步：数据整理 → 生成体检指标数据表（基础+特色）
+第三步：大纲构建 → 确认章节框架和篇幅分配（标准版/完整版）
+第四步：分章撰写 → 项目概况→片区体检→功能业态→更新项目→设计引导
+第五步：专项分析 → 潜力评估、概念规划、资金路径深化
+第六步：核心产出 → 项目包总表+六大行动+投资测算+资金平衡
+第七步：全文统稿 → 首尾章节+质检优化+术语统一
+第八步：成果交付 → PPT+Word+附录A-D全套成果
+
+<span class="comment">## 【写作规范要求】</span>
+- 每页一个关键结论句，数据说话，不做空泛描述
+- 指标页四要素：体检内容+现状数据+问题分析+总结结论
+- 红色预警指标🔴突出标注，必须对应具体项目解决方案
+- 八大更新方向全覆盖，六大行动分类清晰
+- 术语统一：使用编制导则标准术语，地方特定表述准确规范
+- 图文对应说明：每页标注配图类型和要点
+
+<span class="comment">## 【输出格式标准】</span>
+- PPT：16:9宽屏，主色深蓝#1A5276，微软雅黑字体
+- 标题28pt Bold，关键结论20pt Bold，正文14pt Regular
+- 表格统一三线表格式，数据卡片化呈现
+- 章节编号规范，图表按章节编号
+- 附件命名：附录A基础指标、附录B特色指标、附录C原则索引、附录D项目总表
+
+<span class="comment">## 【质量检查节点】</span>
+节点1（大纲确认）：章节框架、特色指标选配、重点章节定位
+节点2（数据确认）：体检指标数值、红色预警清单、存量资源台账
+节点3（项目确认）：项目包清单完整性、投资合理性、资金渠道合规性
+最终质检：数据一致性、术语统一性、逻辑连贯性、格式规范性、引领原则覆盖度
+
+<span class="comment">---</span>
+请读取当前项目文件夹中的所有资料，按照以上标准流程开始工作。
+第一步先输出《项目初步认知简报》，确认对项目的理解无误后进入下一步。</div>
+            </div>
+
+            <div class="card">
+                <h3>五、使用方法说明</h3>
+                <ol>
+                    <li><strong>项目收尾时生成</strong>：每个项目完成后，用AI辅助生成该项目的经验版Skill，把本次项目的特殊经验和评审反馈沉淀下来</li>
+                    <li><strong>新项目根目录调用</strong>：新建项目时，把最新版本的 <code>skill.md</code> 文件放到项目根目录，AI启动时自动读取加载，无需重复输入指令</li>
+                    <li><strong>持续迭代版本递增</strong>：每做完一个项目更新一次版本，v1.0→v1.1→v2.0，小改动小版本号，方法论升级大版本号</li>
+                    <li><strong>分类建立Skill库</strong>：按项目类型建立不同的Skill——综合片区版、历史街区版、老旧厂区版、城中村版，各有侧重，精准匹配</li>
+                    <li><strong>团队共享统一标准</strong>：团队共用一套Skill库，所有人产出风格一致，新人快速上手，项目质量稳定可控</li>
+                </ol>
+                <div class="tip-box">
+                    <strong>💡 进阶建议：</strong>
+                    可以在Skill中加入本地特定要求，如湖南省专项资金申报要点、湘潭市城市更新政策细则等，让Skill越来越"接地气"。
+                    评审反馈是最好的优化素材，每次专家评审会后把意见整理进Skill，下次就不会再踩同样的坑。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.nav-tab');
+            const contents = document.querySelectorAll('.tab-content');
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            contents.forEach((content, i) => {
+                content.classList.toggle('active', i === index);
+            });
+        }
+    </script>
+
+    
+    

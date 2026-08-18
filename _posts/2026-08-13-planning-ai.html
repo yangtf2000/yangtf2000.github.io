@@ -1,0 +1,1123 @@
+---
+layout: post
+title: "规划设计业务 AI 应用技术与工具一览"
+date: 2026-08-13
+category: work
+tags: [规划, AI, 一页纸]
+excerpt: "面向城市更新、国土空间规划、专项规划、控规、城市体检、片区策划、土地整治、概念规划及项目资金申报等业务的 AI 赋能梳理"
+---
+
+<link rel="stylesheet" href="/assets/theme.css"><link rel="stylesheet" href="/assets/force-dark.css"><link rel="stylesheet" href="/assets/site.css">
+<style>
+
+  :root{
+    --bg:#0b1120;
+    --bg2:#15203a;
+    --card:#1b2742;
+    --card2:#213050;
+    --border:rgba(148,163,184,.26);
+    --border-soft:rgba(148,163,184,.17);
+    --text:#f2f6fc;
+    --soft:#d9e3f0;
+    --muted:#aeb9cd;
+    --accent:#38bdf8;
+    --accent2:#818cf8;
+    --good:#34d399;
+    --warn:#fbbf24;
+    --bad:#f87171;
+    --grad:linear-gradient(135deg,#1e3a8a 0%,#6d28d9 55%,#0ea5e9 100%);
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+    color:var(--text);
+    margin:0; padding:28px 34px;
+    background:
+      radial-gradient(1200px 600px at 12% -8%, rgba(56,189,248,.10), transparent 60%),
+      radial-gradient(1000px 520px at 100% 0%, rgba(129,140,248,.12), transparent 55%),
+      var(--bg);
+    font-size:14px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:1180px; margin:0 auto;}
+
+  /* Header */
+  .hero{
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px 28px;
+    background:linear-gradient(180deg, rgba(30,58,138,.18), rgba(11,17,32,.2));
+    position:relative; overflow:hidden;
+  }
+  .hero:before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--grad);
+  }
+  .hero h1{
+    font-size:25px; margin:0 0 5px; letter-spacing:.5px;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-weight:800;
+  }
+  .hero .sub{font-size:13.5px; color:var(--muted); margin:0;}
+  .hero .meta{margin:11px 0 0; font-size:12.5px; color:var(--muted); line-height:1.7;}
+  .hero .meta .site{color:var(--accent); text-decoration:none;}
+  .hero .meta .site:hover{text-decoration:underline;}
+  .hero .meta .who{color:var(--accent);}
+
+  /* Abstract */
+  .abstract{
+    border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:12px; padding:16px 20px; margin:18px 0 4px;
+    background:linear-gradient(180deg, rgba(56,189,248,.07), rgba(11,17,32,.15));
+  }
+  .abstract h2{margin:0 0 9px; font-size:16px; color:#fff; letter-spacing:.5px;}
+  .abstract h2 .ab-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; border-radius:7px; margin-right:9px;
+    background:var(--grad); color:#fff; font-size:13px; font-weight:800; vertical-align:middle;
+  }
+  .abstract p{margin:0 0 9px; font-size:14px; color:var(--soft); line-height:1.75;}
+  .abstract p:last-child{margin-bottom:0;}
+  .abstract b{color:var(--accent); font-weight:700;}
+  .abstract .tags-in{margin-top:4px; display:flex; flex-wrap:wrap; gap:7px;}
+  .abstract .t-in{
+    font-size:12.5px; color:var(--text); background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.28); border-radius:20px; padding:3px 11px;
+  }
+
+  /* Section */
+  h2{
+    display:flex; align-items:center; gap:11px;
+    font-size:18px; color:var(--text); margin:28px 0 13px; font-weight:700;
+  }
+  h2 .num{
+    flex:0 0 auto; width:28px; height:28px; border-radius:8px;
+    background:var(--grad); color:#fff; font-size:14px; font-weight:800;
+    display:grid; place-items:center; box-shadow:0 4px 14px rgba(56,189,248,.25);
+  }
+  h2 .bar{flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent);}
+  p.lead{margin:7px 0 13px; color:var(--soft); font-size:14px;}
+
+  .sub-h{display:flex; align-items:center; gap:9px; font-size:15.5px; color:var(--text); margin:22px 0 11px; font-weight:700;}
+  .sub-h .dot{width:10px; height:10px; border-radius:3px; background:var(--grad); flex:0 0 auto;}
+  .sub-h .tag-key{font-size:12px; color:var(--warn); border:1px solid rgba(251,191,36,.4); background:rgba(251,191,36,.1); border-radius:6px; padding:2px 9px; margin-left:6px;}
+
+  /* Tags */
+  .tags{display:flex; flex-wrap:wrap; gap:9px; margin:9px 0;}
+  .tag{
+    background:rgba(56,189,248,.10); color:#bfe6fb;
+    border:1px solid rgba(56,189,248,.28); border-radius:999px;
+    padding:5px 12px; font-size:13px; white-space:nowrap;
+  }
+
+  /* Steps list (section 2) */
+  ol.flow{list-style:none; counter-reset:s; margin:9px 0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:9px;}
+  ol.flow li{
+    counter-increment:s; position:relative; padding:10px 13px 10px 40px;
+    background:var(--card); border:1px solid var(--border-soft); border-radius:10px;
+    color:var(--soft); font-size:13.5px; line-height:1.55;
+  }
+  ol.flow li:before{
+    content:counter(s,decimal-leading-zero); position:absolute; left:11px; top:50%; transform:translateY(-50%);
+    color:var(--accent); font-weight:800; font-size:14px;
+  }
+
+  /* Table */
+  .tbl-wrap{border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  table{width:100%; border-collapse:collapse; font-size:12.5px; line-height:1.55;}
+  thead th{
+    background:linear-gradient(180deg,#1b2c4d,#152138); color:#dbe7f7; font-weight:700;
+    padding:10px 9px; text-align:left; border-bottom:1px solid var(--border); position:sticky; top:0; font-size:12.5px; vertical-align:middle;
+  }
+  tbody td{border-bottom:1px solid var(--border-soft); padding:8px 9px; vertical-align:middle; color:var(--soft);}
+  tbody tr:nth-child(even){background:rgba(255,255,255,.02);}
+  tbody tr:hover{background:rgba(56,189,248,.07);}
+  td.col-step{font-weight:700; color:#e9f3ff; white-space:nowrap; width:106px; font-size:12.5px;}
+  td.col-tool{width:152px; color:#cfe0f2; font-size:12.5px;}
+  td.col-diff{width:122px; font-size:12.5px;}
+  .d-badge{display:inline-block; padding:2px 9px; border-radius:6px; font-size:12px; font-weight:700; white-space:nowrap;}
+  .d-low{background:rgba(52,211,153,.15); color:#6ee7b7; border:1px solid rgba(52,211,153,.35);}
+  .d-mid{background:rgba(251,191,36,.14); color:#fcd34d; border:1px solid rgba(251,191,36,.33);}
+  .d-high{background:rgba(248,113,113,.14); color:#fca5a5; border:1px solid rgba(248,113,113,.33);}
+
+  /* Agent grid */
+  .agent-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:11px; margin:11px 0;}
+  .agent{
+    background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:13px 14px;
+    border-top:3px solid var(--accent);
+  }
+  .agent:nth-child(2){border-top-color:var(--accent2);}
+  .agent:nth-child(3){border-top-color:var(--good);}
+  .agent:nth-child(4){border-top-color:var(--warn);}
+  .agent b{display:block; font-size:15.5px; color:#fff; margin-bottom:3px;}
+  .agent .role{color:var(--muted); font-size:12.5px; margin-bottom:7px; display:block;}
+  .agent p{margin:0; font-size:13px; color:var(--soft); line-height:1.6;}
+
+  /* Tech cards */
+  .tech-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:11px; margin:11px 0;}
+  .tech-card{
+    background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px;
+    position:relative;
+  }
+  .tech-card:before{content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:3px; background:var(--grad);}
+  .tech-card h3{margin:0 0 7px; font-size:14.5px; color:#fff; padding-left:8px;}
+  .tech-card p{margin:4px 0; font-size:13px; color:var(--soft); line-height:1.6; padding-left:8px;}
+  .tech-card .lbl{color:var(--accent); font-weight:700;}
+  .tech-card .map{margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); color:var(--muted); font-size:12.5px;}
+
+  .foot{font-size:12.5px; color:var(--muted); margin-top:24px; border-top:1px dashed var(--border); padding-top:11px; line-height:1.6;}
+
+  /* Insight callout */
+  .insight{
+    display:flex; gap:13px; align-items:flex-start;
+    background:linear-gradient(180deg,rgba(129,140,248,.12),rgba(56,189,248,.06));
+    border:1px solid rgba(129,140,248,.30); border-left:4px solid var(--accent2);
+    border-radius:12px; padding:15px 18px; margin:15px 0 5px;
+  }
+  .insight .ic{flex:0 0 auto; font-size:20px; line-height:1; margin-top:1px;}
+  .insight .tx{font-size:14px; color:var(--soft); line-height:1.7;}
+  .insight .tx b{color:#c7d2fe;}
+  .insight .tx .hl{color:var(--accent); font-weight:700;}
+
+  /* Skill box (Agent key capability) */
+  .skill-box{
+    display:flex; gap:13px; align-items:flex-start;
+    background:linear-gradient(180deg,rgba(52,211,153,.10),rgba(56,189,248,.05));
+    border:1px solid rgba(52,211,153,.30); border-left:4px solid var(--good);
+    border-radius:12px; padding:14px 17px; margin:13px 0;
+  }
+  .skill-box .ic{flex:0 0 auto; font-size:20px; line-height:1; margin-top:1px;}
+  .skill-box .tx{font-size:13.5px; color:var(--soft); line-height:1.7;}
+  .skill-box h4{margin:0 0 8px; font-size:15px; color:var(--good); font-weight:800;}
+  .skill-box ul{margin:0; padding-left:18px;}
+  .skill-box li{margin:5px 0;}
+  .skill-box li b{color:#6ee7b7;}
+
+  /* Compare box (Agent vs tool) */
+  .cmp{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin:11px 0;}
+  .cmp .col{border-radius:12px; padding:13px 15px; border:1px solid var(--border-soft);}
+  .cmp .col.old{background:rgba(148,163,184,.07);}
+  .cmp .col.new{background:linear-gradient(180deg,rgba(52,211,153,.10),rgba(56,189,248,.05)); border-color:rgba(52,211,153,.3);}
+  .cmp .col h4{margin:0 0 8px; font-size:14px; color:#fff;}
+  .cmp .col.old h4{color:var(--muted);}
+  .cmp .col ul{margin:0; padding-left:18px; font-size:13px; color:var(--soft); line-height:1.6;}
+  .cmp .col ul li{margin:5px 0;}
+
+  /* Case timeline (case 1) */
+  .case-intro{
+    background:linear-gradient(180deg,rgba(56,189,248,.08),rgba(129,140,248,.05));
+    border:1px solid var(--border-soft); border-radius:12px; padding:13px 15px; margin:7px 0 15px; color:var(--soft); font-size:14px; line-height:1.65;
+  }
+  .case-intro b{color:var(--accent);}
+  .case-intro a{color:var(--accent); text-decoration:none;}
+  .case-intro a:hover{text-decoration:underline;}
+  .preproc{background:rgba(56,189,248,.06); border:1px dashed rgba(56,189,248,.32); border-radius:10px; padding:10px 13px; margin:9px 0; font-size:12.5px; color:var(--soft); line-height:1.65;}
+  .preproc b{color:var(--accent);}
+  .timeline{position:relative; margin:7px 0 7px 6px; padding-left:32px;}
+  .timeline:before{content:""; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:linear-gradient(180deg,var(--accent),var(--accent2));}
+  .tl-item{position:relative; margin-bottom:13px;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-dot{
+    position:absolute; left:-31px; top:4px; width:22px; height:22px; border-radius:50%;
+    background:var(--grad); color:#fff; font-size:12px; font-weight:800; display:grid; place-items:center;
+    box-shadow:0 0 0 4px rgba(56,189,248,.12);
+  }
+  .tl-body{
+    background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:12px 15px;
+  }
+  .tl-body .t-title{font-size:15px; font-weight:700; color:#fff; margin:0 0 3px;}
+  .tl-body .t-goal{font-size:13px; color:var(--accent); margin:0 0 9px;}
+  .tl-cols{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
+  .tl-box{background:var(--bg2); border:1px solid var(--border-soft); border-radius:9px; padding:9px 11px;}
+  .tl-box .k{font-size:12px; color:var(--muted); font-weight:700; letter-spacing:.5px; display:block; margin-bottom:4px;}
+  .tl-box .v{font-size:13px; color:var(--soft); line-height:1.6;}
+  .tl-box .v .tool{color:#bfe6fb;}
+  .tl-box .v .out{color:#6ee7b7;}
+
+  .gate{
+    display:flex; flex-wrap:wrap; gap:9px; margin:15px 0 5px;
+    background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.22); border-radius:12px; padding:12px 15px;
+  }
+  .gate .gt{font-size:12.5px; color:var(--warn); font-weight:700; margin-right:7px; align-self:center;}
+  .gate .chip{background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.3); color:#fcd34d; border-radius:8px; padding:4px 11px; font-size:13px;}
+
+  .case-end{
+    margin:15px 0 5px; padding:12px 15px; border-radius:12px;
+    background:linear-gradient(180deg,rgba(129,140,248,.10),rgba(56,189,248,.06));
+    border:1px solid var(--border-soft); font-size:13.5px; color:var(--soft); line-height:1.65;
+  }
+  .case-end b{color:var(--accent2);}
+
+  /* Case 2: survey cross-analysis */
+  .survey-note{font-size:13px; color:var(--muted); margin:6px 0 12px; line-height:1.6;}
+  .survey-note b{color:var(--accent);}
+  .old-way{
+    background:rgba(148,163,184,.07); border:1px dashed var(--border); border-radius:10px;
+    padding:11px 14px; margin:10px 0; font-size:13px; color:var(--muted); line-height:1.6;
+  }
+  .old-way b{color:#cbd5e1;}
+  .x-block{margin:14px 0;}
+  .x-block .x-cap{font-size:13.5px; color:var(--soft); margin:0 0 8px;}
+  .x-block .x-cap b{color:var(--accent);}
+  .x-tab{width:100%; border-collapse:collapse; font-size:13px; margin:4px 0;}
+  .x-tab th{background:rgba(27,44,77,.6); color:#dbe7f7; padding:8px 11px; text-align:left; border-bottom:1px solid var(--border); font-weight:700;}
+  .x-tab td{padding:8px 11px; border-bottom:1px solid var(--border-soft); color:var(--soft); vertical-align:middle;}
+  .x-tab td.lab{font-weight:700; color:#e9f3ff; white-space:nowrap;}
+  .x-tab tbody tr:nth-child(even){background:rgba(255,255,255,.02);}
+  .barwrap{position:relative; background:rgba(255,255,255,.07); border-radius:6px; height:20px; min-width:130px; overflow:hidden;}
+  .barfill{position:absolute; left:0; top:0; height:100%; border-radius:6px; background:linear-gradient(90deg,#38bdf8,#818cf8);}
+  .barfill.warn{background: rgba(129,140,248,0.08);}
+  .barfill.good{background:linear-gradient(90deg,#34d399,#38bdf8);}
+  .barval{position:relative; z-index:1; font-size:12px; font-weight:700; color:#fff; line-height:20px; padding-left:9px;}
+  .x-find{
+    display:flex; gap:11px; align-items:flex-start;
+    background:linear-gradient(180deg,rgba(56,189,248,.10),rgba(129,140,248,.05));
+    border:1px solid rgba(56,189,248,.28); border-left:4px solid var(--accent);
+    border-radius:10px; padding:12px 15px; margin:9px 0 4px;
+  }
+  .x-find .n{flex:0 0 auto; width:24px; height:24px; border-radius:50%; background:var(--grad); color:#fff; font-weight:800; font-size:13px; display:grid; place-items:center;}
+  .x-find .t{font-size:13.5px; color:var(--soft); line-height:1.65;}
+  .x-find .t b{color:var(--accent);}
+
+  /* Visualization subsection (case 2) */
+  .viz-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:13px 0 4px;}
+  .viz-card{background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:12px 13px;}
+  .viz-card h4{margin:0 0 2px; font-size:13.5px; color:#fff;}
+  .viz-card .vsub{font-size:11.5px; color:var(--muted); margin:0 0 11px; line-height:1.5;}
+  .histo{display:flex; align-items:flex-end; gap:9px; height:128px; padding:0 2px; border-bottom:1px solid var(--border);}
+  .histo .bar{flex:1; border-radius:5px 5px 0 0; background:linear-gradient(180deg,#38bdf8,#818cf8); position:relative; min-height:5px;}
+  .histo .bar .bv{position:absolute; top:-16px; left:0; right:0; text-align:center; font-size:11px; font-weight:700; color:var(--text);}
+  .histo .xlab{display:flex; gap:9px; padding:4px 2px 0;}
+  .histo .xlab span{flex:1; text-align:center; font-size:11px; color:var(--muted);}
+  .pie{width:118px; height:118px; border-radius:50%; margin:6px auto 4px; background:conic-gradient(#38bdf8 0 52%, #818cf8 52% 85%, #fbbf24 85% 100%); box-shadow:0 0 0 4px rgba(255,255,255,.04);}
+  .pie-leg{display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--soft); margin-top:6px;}
+  .pie-leg .li{display:flex; align-items:center; gap:7px;}
+  .pie-leg .sw{width:11px; height:11px; border-radius:3px; flex:0 0 auto;}
+  .stack-row{margin:8px 0;}
+  .stack-row .sl{font-size:11.5px; color:var(--soft); margin-bottom:3px;}
+  .stack-bar{display:flex; height:18px; border-radius:5px; overflow:hidden;}
+  .stack-bar span{height:100%; display:block;}
+  .stack-leg{display:flex; gap:13px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-top:9px;}
+  .stack-leg .li{display:flex; align-items:center; gap:5px;}
+  .stack-leg .sw{width:10px; height:10px; border-radius:2px; flex:0 0 auto;}
+  .viz-note{font-size:12.5px; color:var(--soft); margin:9px 0 2px; line-height:1.65;}
+  .viz-note b{color:var(--accent);}
+
+  @media (max-width:820px){
+    ol.flow,.tl-cols,.cmp,.viz-grid{grid-template-columns:1fr;}
+    .agent-grid{grid-template-columns:1fr 1fr;}
+    .tech-grid{grid-template-columns:1fr;}
+  }
+  @media print{
+    body{background:#0b1120;}
+    .hero,.tl-body,.agent,.tech-card,.x-find,.skill-box{break-inside:avoid;}
+  }
+
+    </style><style>
+
+  :root{
+    --bg:#0b1120;
+    --bg2:#15203a;
+    --card:#1b2742;
+    --card2:#213050;
+    --border:rgba(148,163,184,.26);
+    --border-soft:rgba(148,163,184,.17);
+    --text:#f2f6fc;
+    --soft:#d9e3f0;
+    --muted:#aeb9cd;
+    --accent:#38bdf8;
+    --accent2:#818cf8;
+    --good:#34d399;
+    --warn:#fbbf24;
+    --bad:#f87171;
+    --grad:linear-gradient(135deg,#1e3a8a 0%,#6d28d9 55%,#0ea5e9 100%);
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+    color:var(--text);
+    margin:0; padding:28px 34px;
+    background:
+      radial-gradient(1200px 600px at 12% -8%, rgba(56,189,248,.10), transparent 60%),
+      radial-gradient(1000px 520px at 100% 0%, rgba(129,140,248,.12), transparent 55%),
+      var(--bg);
+    font-size:14px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:1180px; margin:0 auto;}
+
+  /* Header */
+  .hero{
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px 28px;
+    background:linear-gradient(180deg, rgba(30,58,138,.18), rgba(11,17,32,.2));
+    position:relative; overflow:hidden;
+  }
+  .hero:before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--grad);
+  }
+  .hero h1{
+    font-size:25px; margin:0 0 5px; letter-spacing:.5px;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-weight:800;
+  }
+  .hero .sub{font-size:13.5px; color:var(--muted); margin:0;}
+  .hero .meta{margin:11px 0 0; font-size:12.5px; color:var(--muted); line-height:1.7;}
+  .hero .meta .site{color:var(--accent); text-decoration:none;}
+  .hero .meta .site:hover{text-decoration:underline;}
+  .hero .meta .who{color:var(--accent);}
+
+  /* Abstract */
+  .abstract{
+    border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:12px; padding:16px 20px; margin:18px 0 4px;
+    background:linear-gradient(180deg, rgba(56,189,248,.07), rgba(11,17,32,.15));
+  }
+  .abstract h2{margin:0 0 9px; font-size:16px; color:#fff; letter-spacing:.5px;}
+  .abstract h2 .ab-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; border-radius:7px; margin-right:9px;
+    background:var(--grad); color:#fff; font-size:13px; font-weight:800; vertical-align:middle;
+  }
+  .abstract p{margin:0 0 9px; font-size:14px; color:var(--soft); line-height:1.75;}
+  .abstract p:last-child{margin-bottom:0;}
+  .abstract b{color:var(--accent); font-weight:700;}
+  .abstract .tags-in{margin-top:4px; display:flex; flex-wrap:wrap; gap:7px;}
+  .abstract .t-in{
+    font-size:12.5px; color:var(--text); background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.28); border-radius:20px; padding:3px 11px;
+  }
+
+  /* Section */
+  h2{
+    display:flex; align-items:center; gap:11px;
+    font-size:18px; color:var(--text); margin:28px 0 13px; font-weight:700;
+  }
+  h2 .num{
+    flex:0 0 auto; width:28px; height:28px; border-radius:8px;
+    background:var(--grad); color:#fff; font-size:14px; font-weight:800;
+    display:grid; place-items:center; box-shadow:0 4px 14px rgba(56,189,248,.25);
+  }
+  h2 .bar{flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent);}
+  p.lead{margin:7px 0 13px; color:var(--soft); font-size:14px;}
+
+  .sub-h{display:flex; align-items:center; gap:9px; font-size:15.5px; color:var(--text); margin:22px 0 11px; font-weight:700;}
+  .sub-h .dot{width:10px; height:10px; border-radius:3px; background:var(--grad); flex:0 0 auto;}
+  .sub-h .tag-key{font-size:12px; color:var(--warn); border:1px solid rgba(251,191,36,.4); background:rgba(251,191,36,.1); border-radius:6px; padding:2px 9px; margin-left:6px;}
+
+  /* Tags */
+  .tags{display:flex; flex-wrap:wrap; gap:9px; margin:9px 0;}
+  .tag{
+    background:rgba(56,189,248,.10); color:#bfe6fb;
+    border:1px solid rgba(56,189,248,.28); border-radius:999px;
+    padding:5px 12px; font-size:13px; white-space:nowrap;
+  }
+
+  /* Steps list (section 2) */
+  ol.flow{list-style:none; counter-reset:s; margin:9px 0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:9px;}
+  ol.flow li{
+    counter-increment:s; position:relative; padding:10px 13px 10px 40px;
+    background:var(--card); border:1px solid var(--border-soft); border-radius:10px;
+    color:var(--soft); font-size:13.5px; line-height:1.55;
+  }
+  ol.flow li:before{
+    content:counter(s,decimal-leading-zero); position:absolute; left:11px; top:50%; transform:translateY(-50%);
+    color:var(--accent); font-weight:800; font-size:14px;
+  }
+
+  /* Table */
+  .tbl-wrap{border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  table{width:100%; border-collapse:collapse; font-size:12.5px; line-height:1.55;}
+  thead th{
+    background:linear-gradient(180deg,#1b2c4d,#152138); color:#dbe7f7; font-weight:700;
+    padding:10px 9px; text-align:left; border-bottom:1px solid var(--border); position:sticky; top:0; font-size:12.5px; vertical-align:middle;
+  }
+  tbody td{border-bottom:1px solid var(--border-soft); padding:8px 9px; vertical-align:middle; color:var(--soft);}
+  tbody tr:nth-child(even){background:rgba(255,255,255,.02);}
+  tbody tr:hover{background:rgba(56,189,248,.07);}
+  td.col-step{font-weight:700; color:#e9f3ff; white-space:nowrap; width:106px; font-size:12.5px;}
+  td.col-tool{width:152px; color:#cfe0f2; font-size:12.5px;}
+  td.col-diff{width:122px; font-size:12.5px;}
+  .d-badge{display:inline-block; padding:2px 9px; border-radius:6px; font-size:12px; font-weight:700; white-space:nowrap;}
+  .d-low{background:rgba(52,211,153,.15); color:#6ee7b7; border:1px solid rgba(52,211,153,.35);}
+  .d-mid{background:rgba(251,191,36,.14); color:#fcd34d; border:1px solid rgba(251,191,36,.33);}
+  .d-high{background:rgba(248,113,113,.14); color:#fca5a5; border:1px solid rgba(248,113,113,.33);}
+
+  /* Agent grid */
+  .agent-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:11px; margin:11px 0;}
+  .agent{
+    background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:13px 14px;
+    border-top:3px solid var(--accent);
+  }
+  .agent:nth-child(2){border-top-color:var(--accent2);}
+  .agent:nth-child(3){border-top-color:var(--good);}
+  .agent:nth-child(4){border-top-color:var(--warn);}
+  .agent b{display:block; font-size:15.5px; color:#fff; margin-bottom:3px;}
+  .agent .role{color:var(--muted); font-size:12.5px; margin-bottom:7px; display:block;}
+  .agent p{margin:0; font-size:13px; color:var(--soft); line-height:1.6;}
+
+  /* Tech cards */
+  .tech-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:11px; margin:11px 0;}
+  .tech-card{
+    background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px;
+    position:relative;
+  }
+  .tech-card:before{content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:3px; background:var(--grad);}
+  .tech-card h3{margin:0 0 7px; font-size:14.5px; color:#fff; padding-left:8px;}
+  .tech-card p{margin:4px 0; font-size:13px; color:var(--soft); line-height:1.6; padding-left:8px;}
+  .tech-card .lbl{color:var(--accent); font-weight:700;}
+  .tech-card .map{margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); color:var(--muted); font-size:12.5px;}
+
+  .foot{font-size:12.5px; color:var(--muted); margin-top:24px; border-top:1px dashed var(--border); padding-top:11px; line-height:1.6;}
+
+  /* Insight callout */
+  .insight{
+    display:flex; gap:13px; align-items:flex-start;
+    background:linear-gradient(180deg,rgba(129,140,248,.12),rgba(56,189,248,.06));
+    border:1px solid rgba(129,140,248,.30); border-left:4px solid var(--accent2);
+    border-radius:12px; padding:15px 18px; margin:15px 0 5px;
+  }
+  .insight .ic{flex:0 0 auto; font-size:20px; line-height:1; margin-top:1px;}
+  .insight .tx{font-size:14px; color:var(--soft); line-height:1.7;}
+  .insight .tx b{color:#c7d2fe;}
+  .insight .tx .hl{color:var(--accent); font-weight:700;}
+
+  /* Skill box (Agent key capability) */
+  .skill-box{
+    display:flex; gap:13px; align-items:flex-start;
+    background:linear-gradient(180deg,rgba(52,211,153,.10),rgba(56,189,248,.05));
+    border:1px solid rgba(52,211,153,.30); border-left:4px solid var(--good);
+    border-radius:12px; padding:14px 17px; margin:13px 0;
+  }
+  .skill-box .ic{flex:0 0 auto; font-size:20px; line-height:1; margin-top:1px;}
+  .skill-box .tx{font-size:13.5px; color:var(--soft); line-height:1.7;}
+  .skill-box h4{margin:0 0 8px; font-size:15px; color:var(--good); font-weight:800;}
+  .skill-box ul{margin:0; padding-left:18px;}
+  .skill-box li{margin:5px 0;}
+  .skill-box li b{color:#6ee7b7;}
+
+  /* Compare box (Agent vs tool) */
+  .cmp{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin:11px 0;}
+  .cmp .col{border-radius:12px; padding:13px 15px; border:1px solid var(--border-soft);}
+  .cmp .col.old{background:rgba(148,163,184,.07);}
+  .cmp .col.new{background:linear-gradient(180deg,rgba(52,211,153,.10),rgba(56,189,248,.05)); border-color:rgba(52,211,153,.3);}
+  .cmp .col h4{margin:0 0 8px; font-size:14px; color:#fff;}
+  .cmp .col.old h4{color:var(--muted);}
+  .cmp .col ul{margin:0; padding-left:18px; font-size:13px; color:var(--soft); line-height:1.6;}
+  .cmp .col ul li{margin:5px 0;}
+
+  /* Case timeline (case 1) */
+  .case-intro{
+    background:linear-gradient(180deg,rgba(56,189,248,.08),rgba(129,140,248,.05));
+    border:1px solid var(--border-soft); border-radius:12px; padding:13px 15px; margin:7px 0 15px; color:var(--soft); font-size:14px; line-height:1.65;
+  }
+  .case-intro b{color:var(--accent);}
+  .case-intro a{color:var(--accent); text-decoration:none;}
+  .case-intro a:hover{text-decoration:underline;}
+  .preproc{background:rgba(56,189,248,.06); border:1px dashed rgba(56,189,248,.32); border-radius:10px; padding:10px 13px; margin:9px 0; font-size:12.5px; color:var(--soft); line-height:1.65;}
+  .preproc b{color:var(--accent);}
+  .timeline{position:relative; margin:7px 0 7px 6px; padding-left:32px;}
+  .timeline:before{content:""; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:linear-gradient(180deg,var(--accent),var(--accent2));}
+  .tl-item{position:relative; margin-bottom:13px;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-dot{
+    position:absolute; left:-31px; top:4px; width:22px; height:22px; border-radius:50%;
+    background:var(--grad); color:#fff; font-size:12px; font-weight:800; display:grid; place-items:center;
+    box-shadow:0 0 0 4px rgba(56,189,248,.12);
+  }
+  .tl-body{
+    background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:12px 15px;
+  }
+  .tl-body .t-title{font-size:15px; font-weight:700; color:#fff; margin:0 0 3px;}
+  .tl-body .t-goal{font-size:13px; color:var(--accent); margin:0 0 9px;}
+  .tl-cols{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
+  .tl-box{background:var(--bg2); border:1px solid var(--border-soft); border-radius:9px; padding:9px 11px;}
+  .tl-box .k{font-size:12px; color:var(--muted); font-weight:700; letter-spacing:.5px; display:block; margin-bottom:4px;}
+  .tl-box .v{font-size:13px; color:var(--soft); line-height:1.6;}
+  .tl-box .v .tool{color:#bfe6fb;}
+  .tl-box .v .out{color:#6ee7b7;}
+
+  .gate{
+    display:flex; flex-wrap:wrap; gap:9px; margin:15px 0 5px;
+    background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.22); border-radius:12px; padding:12px 15px;
+  }
+  .gate .gt{font-size:12.5px; color:var(--warn); font-weight:700; margin-right:7px; align-self:center;}
+  .gate .chip{background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.3); color:#fcd34d; border-radius:8px; padding:4px 11px; font-size:13px;}
+
+  .case-end{
+    margin:15px 0 5px; padding:12px 15px; border-radius:12px;
+    background:linear-gradient(180deg,rgba(129,140,248,.10),rgba(56,189,248,.06));
+    border:1px solid var(--border-soft); font-size:13.5px; color:var(--soft); line-height:1.65;
+  }
+  .case-end b{color:var(--accent2);}
+
+  /* Case 2: survey cross-analysis */
+  .survey-note{font-size:13px; color:var(--muted); margin:6px 0 12px; line-height:1.6;}
+  .survey-note b{color:var(--accent);}
+  .old-way{
+    background:rgba(148,163,184,.07); border:1px dashed var(--border); border-radius:10px;
+    padding:11px 14px; margin:10px 0; font-size:13px; color:var(--muted); line-height:1.6;
+  }
+  .old-way b{color:#cbd5e1;}
+  .x-block{margin:14px 0;}
+  .x-block .x-cap{font-size:13.5px; color:var(--soft); margin:0 0 8px;}
+  .x-block .x-cap b{color:var(--accent);}
+  .x-tab{width:100%; border-collapse:collapse; font-size:13px; margin:4px 0;}
+  .x-tab th{background:rgba(27,44,77,.6); color:#dbe7f7; padding:8px 11px; text-align:left; border-bottom:1px solid var(--border); font-weight:700;}
+  .x-tab td{padding:8px 11px; border-bottom:1px solid var(--border-soft); color:var(--soft); vertical-align:middle;}
+  .x-tab td.lab{font-weight:700; color:#e9f3ff; white-space:nowrap;}
+  .x-tab tbody tr:nth-child(even){background:rgba(255,255,255,.02);}
+  .barwrap{position:relative; background:rgba(255,255,255,.07); border-radius:6px; height:20px; min-width:130px; overflow:hidden;}
+  .barfill{position:absolute; left:0; top:0; height:100%; border-radius:6px; background:linear-gradient(90deg,#38bdf8,#818cf8);}
+  .barfill.warn{background: rgba(129,140,248,0.08);}
+  .barfill.good{background:linear-gradient(90deg,#34d399,#38bdf8);}
+  .barval{position:relative; z-index:1; font-size:12px; font-weight:700; color:#fff; line-height:20px; padding-left:9px;}
+  .x-find{
+    display:flex; gap:11px; align-items:flex-start;
+    background:linear-gradient(180deg,rgba(56,189,248,.10),rgba(129,140,248,.05));
+    border:1px solid rgba(56,189,248,.28); border-left:4px solid var(--accent);
+    border-radius:10px; padding:12px 15px; margin:9px 0 4px;
+  }
+  .x-find .n{flex:0 0 auto; width:24px; height:24px; border-radius:50%; background:var(--grad); color:#fff; font-weight:800; font-size:13px; display:grid; place-items:center;}
+  .x-find .t{font-size:13.5px; color:var(--soft); line-height:1.65;}
+  .x-find .t b{color:var(--accent);}
+
+  /* Visualization subsection (case 2) */
+  .viz-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:13px 0 4px;}
+  .viz-card{background:var(--card); border:1px solid var(--border-soft); border-radius:12px; padding:12px 13px;}
+  .viz-card h4{margin:0 0 2px; font-size:13.5px; color:#fff;}
+  .viz-card .vsub{font-size:11.5px; color:var(--muted); margin:0 0 11px; line-height:1.5;}
+  .histo{display:flex; align-items:flex-end; gap:9px; height:128px; padding:0 2px; border-bottom:1px solid var(--border);}
+  .histo .bar{flex:1; border-radius:5px 5px 0 0; background:linear-gradient(180deg,#38bdf8,#818cf8); position:relative; min-height:5px;}
+  .histo .bar .bv{position:absolute; top:-16px; left:0; right:0; text-align:center; font-size:11px; font-weight:700; color:var(--text);}
+  .histo .xlab{display:flex; gap:9px; padding:4px 2px 0;}
+  .histo .xlab span{flex:1; text-align:center; font-size:11px; color:var(--muted);}
+  .pie{width:118px; height:118px; border-radius:50%; margin:6px auto 4px; background:conic-gradient(#38bdf8 0 52%, #818cf8 52% 85%, #fbbf24 85% 100%); box-shadow:0 0 0 4px rgba(255,255,255,.04);}
+  .pie-leg{display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--soft); margin-top:6px;}
+  .pie-leg .li{display:flex; align-items:center; gap:7px;}
+  .pie-leg .sw{width:11px; height:11px; border-radius:3px; flex:0 0 auto;}
+  .stack-row{margin:8px 0;}
+  .stack-row .sl{font-size:11.5px; color:var(--soft); margin-bottom:3px;}
+  .stack-bar{display:flex; height:18px; border-radius:5px; overflow:hidden;}
+  .stack-bar span{height:100%; display:block;}
+  .stack-leg{display:flex; gap:13px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-top:9px;}
+  .stack-leg .li{display:flex; align-items:center; gap:5px;}
+  .stack-leg .sw{width:10px; height:10px; border-radius:2px; flex:0 0 auto;}
+  .viz-note{font-size:12.5px; color:var(--soft); margin:9px 0 2px; line-height:1.65;}
+  .viz-note b{color:var(--accent);}
+
+  @media (max-width:820px){
+    ol.flow,.tl-cols,.cmp,.viz-grid{grid-template-columns:1fr;}
+    .agent-grid{grid-template-columns:1fr 1fr;}
+    .tech-grid{grid-template-columns:1fr;}
+  }
+  @media print{
+    body{background:#0b1120;}
+    .hero,.tl-body,.agent,.tech-card,.x-find,.skill-box{break-inside:avoid;}
+  }
+
+    </style>
+
+<div class="page">
+
+  <div class="hero">
+    <h1>规划设计业务 AI 应用技术与工具一览</h1>
+    <p class="sub">面向城市更新、国土空间规划、专项规划、控规、城市体检、片区策划、土地整治、概念规划及项目资金申报等业务的 AI 赋能梳理</p>
+    <p class="meta">
+       <a class="site" href="https://yangtf2000.github.io/nav/" target="_blank">https://yangtf2000.github.io/nav/</a><br>
+      <span class="who">ytf2000@sina.com</span>
+    </p>
+  </div>
+
+  <div class="abstract">
+    <h2><span class="ab-num">摘</span>摘要</h2>
+    <p>在规划设计业务中，可规模化应用的 AI 技术已覆盖从<b>资料获取</b>到<b>成果交付</b>的全链条，主要包括：<b>大语言模型 / AIGC</b>（政策检索、大纲构建、报告与文本撰写、润色去"AI 味"）；<b>知识库 + RAG 检索增强</b>（基于真实资料问答、规范查询，抑制数据造假）；<b>多模态生成</b>（文生图 / 图生图，用于分析图、效果图、彩平图、配景）；<b>语音识别与多模态解析</b>（会议纪要转写、踏勘音视频速读）；<b>设计垂直 AI 工具</b>（智能强排、指标计算、规范合规校验）；以及贯穿全程的 <b>AI Agent 智能体</b>（把上述环节编排成自动化流水线，并支持经验沉淀为可复用 Skill）。</p>
+    <p>这些技术并非取代规划师，而是将重复劳动交由机器、把专业判断留给人员——流程中保留人工确认节点，数据可走国产 / 私有化方案。下文按"业务类型 → 通用工作环节 → 传统技术与 AI 技术对照 → 技术能力总览 → AI Agent 一站式落地"展开，并附两个实操案例。</p>
+    <div class="tags-in">
+      <span class="t-in">大语言模型 / AIGC</span>
+      <span class="t-in">知识库 + RAG</span>
+      <span class="t-in">多模态生成</span>
+      <span class="t-in">语音识别</span>
+      <span class="t-in">设计垂直模型</span>
+      <span class="t-in">AI Agent 智能体</span>
+    </div>
+  </div>
+
+  <!-- 一 -->
+  <h2><span class="num">一</span>规划设计主要业务类型<span class="bar"></span></h2>
+  <div class="tags">
+    <span class="tag">城市更新</span>
+    <span class="tag">国土空间规划（总规 / 详规）</span>
+    <span class="tag">控制性详细规划（控规）</span>
+    <span class="tag">城市专项规划</span>
+    <span class="tag">城市体检</span>
+    <span class="tag">片区策划</span>
+    <span class="tag">土地整治</span>
+    <span class="tag">概念规划</span>
+    <span class="tag">项目申报与资金争取包装（含经济测算）</span>
+  </div>
+
+  <!-- 二 -->
+  <h2><span class="num">二</span>规划设计成果的通用工作环节<span class="bar"></span></h2>
+  <ol class="flow">
+    <li>基础资料获取与政策研究</li>
+    <li>数据整理与现状分析</li>
+    <li>大纲与框架构建</li>
+    <li>文本撰写</li>
+    <li>图纸制作（现状图 / 规划图 / 分析图）</li>
+    <li>效果图与可视化制作</li>
+    <li>经济测算（投资估算 / 资金平衡 / 效益分析）</li>
+    <li>PPT 与汇报材料制作</li>
+    <li>规范校核与质检</li>
+    <li>知识沉淀与团队协同</li>
+  </ol>
+
+  <!-- 三 -->
+  <h2><span class="num">三</span>传统技术手段 vs AI 技术手段对照<span class="bar"></span></h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>工作环节</th>
+        <th>传统技术手段</th>
+        <th>AI 技术手段</th>
+        <th>利用 AI 怎么做 / 效果</th>
+        <th>具体 AI 工具</th>
+        <th>实现难易度</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-step">资料获取<br>与政策研究</td>
+        <td>人工上政府网站 / 文库检索，翻阅规范与上位规划，访谈收集</td>
+        <td>智能检索 + 大模型摘要 + 知识库</td>
+        <td>AI 定向抓取政策 / 产业 / 规范资料并自动分类摘要，建专题；避免直接编造假数据，效率显著提升</td>
+        <td class="col-tool">秘塔 AI 搜索、Kimi+、腾讯 IMA、心流 / 天工 / 元宝</td>
+        <td class="col-diff"><span class="d-badge d-low">低</span><br>易上手·成熟·免费</td>
+      </tr>
+      <tr>
+        <td class="col-step">数据整理<br>与现状分析</td>
+        <td>Excel 汇总、ArcGIS 空间分析、SPSS 统计、人工归纳</td>
+        <td>大模型数据对话 + 多模态识别</td>
+        <td>上传数据让 AI 做清洗、归纳、生成分析结论与图表建议；提速且减少遗漏</td>
+        <td class="col-tool">DeepSeek / 豆包（数据对话）、Kimi（长表）、IMA</td>
+        <td class="col-diff"><span class="d-badge d-mid">中</span><br>需会描述需求·成熟·免费</td>
+      </tr>
+      <tr>
+        <td class="col-step">大纲与<br>框架构建</td>
+        <td>依经验模板人工搭结构与章节逻辑</td>
+        <td>大模型 + 角色提示 + 链式思考（CoT）</td>
+        <td>设定"资深规划师"角色，按"现状问题→策略→实施→保障"生成三级大纲，贴合院汇报习惯</td>
+        <td class="col-tool">IMA / 豆包 / DeepSeek + 提示词模板</td>
+        <td class="col-diff"><span class="d-badge d-low">低</span><br>易·成熟·免费</td>
+      </tr>
+      <tr>
+        <td class="col-step">文本撰写</td>
+        <td>Word 逐字撰写，参考既有资料</td>
+        <td>大模型分章节生成 + RAG（基于知识库）</td>
+        <td>基于知识库分章节生成初稿，人工润色去"AI 味"；撰写时间大幅缩短，数据须标注来源</td>
+        <td class="col-tool">DeepSeek / 豆包 + IMA 知识库 + 秘塔核查</td>
+        <td class="col-diff"><span class="d-badge d-low">低</span><br>易·成熟·免费，需人工把关</td>
+      </tr>
+      <tr>
+        <td class="col-step">图纸制作<br>（分析图 / 规划图）</td>
+        <td>CAD 绘图、GIS 出图、SU 建模手绘</td>
+        <td>多模态生成 + 设计软件插件</td>
+        <td>SU 白模导出 → AI 图生图生成分析图 / 彩平；建筑学长插件实时出图；出图周期缩短</td>
+        <td class="col-tool">SketchUp + 豆包 / 即梦图生图、建筑学长、PromeAI</td>
+        <td class="col-diff"><span class="d-badge d-mid">中</span><br>需建模基础·较成熟·部分付费</td>
+      </tr>
+      <tr>
+        <td class="col-step">效果图与<br>可视化</td>
+        <td>3ds Max / V-Ray 渲染、PS 精修、手绘</td>
+        <td>文生图 / 图生图 + ControlNet / LoRA</td>
+        <td>线稿 + 提示词（ControlNet 约束形态）生成效果图；LoRA 训练专属立面；D5 / Lumion 实时渲染；渲染大幅提速</td>
+        <td class="col-tool">D5 渲染 AI、Lumion AI、即梦 / 豆包、小库科技、Stable Diffusion</td>
+        <td class="col-diff"><span class="d-badge d-mid">中</span><br>需审美 / 参数·成熟·免费 / 付费</td>
+      </tr>
+      <tr>
+        <td class="col-step">经济测算</td>
+        <td>Excel 投资估算模型、人工算量与平衡</td>
+        <td>大模型 + 代码生成</td>
+        <td>描述测算逻辑，AI 生成 Excel 公式 / Python 脚本自动计算；减少手工错误，提速</td>
+        <td class="col-tool">豆包 / DeepSeek（生成公式）、Kimi K3（复杂推理）</td>
+        <td class="col-diff"><span class="d-badge d-mid">中</span><br>需核对逻辑·成熟·免费</td>
+      </tr>
+      <tr>
+        <td class="col-step">PPT 与<br>汇报材料</td>
+        <td>PowerPoint 手工排版、找图配图</td>
+        <td>AIGC + 模板智能</td>
+        <td>报告导入 AI 生成 PPT 初稿，iSlide 统一风格，自动生成演讲备注；排版省约 80% 时间</td>
+        <td class="col-tool">讯飞智文、Kimi+、百度 AIPPT、Gamma、iSlide</td>
+        <td class="col-diff"><span class="d-badge d-low">低</span><br>易·成熟·免费 / 低</td>
+      </tr>
+      <tr>
+        <td class="col-step">规范校核<br>与质检</td>
+        <td>人工逐条核对规范、交叉检查</td>
+        <td>大模型合规校验 + 知识库</td>
+        <td>基于规范库让 AI 自动校核文本 / 数据一致性 / 术语准确性；差错率下降</td>
+        <td class="col-tool">IMA 规范库 + 自建校核流程（知识库 + 提示词）</td>
+        <td class="col-diff"><span class="d-badge d-mid">中</span><br>需建规范库·较新·免费</td>
+      </tr>
+      <tr>
+        <td class="col-step">知识沉淀<br>与协同</td>
+        <td>个人文件夹留存、邮件传文件</td>
+        <td>知识库（RAG） + 协同平台</td>
+        <td>项目资料入共享知识库，团队可查；提示词库 / 模板库资产化，经验不流失</td>
+        <td class="col-tool">腾讯 IMA、飞书知识库</td>
+        <td class="col-diff"><span class="d-badge d-low">低</span><br>易·成熟·免费 / 低</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="insight">
+    <span class="ic">💡</span>
+    <div class="tx">
+      <b>核心认知：技术门槛已不高，真正的门槛在工作习惯。</b><br>
+      上表"实现难易度"一栏多为<span class="hl">低—中</span>，说明 AI 工具本身上手并不难、选型也不必反复纠结。推广中更常见的，是一种可以理解的自然惯性——习惯于把活儿攥在自己手里一点点做：宁可花上几天按老办法逐条人工整理数据，也不太愿意先花点时间把思路理清楚、把规则与标准想明白，再交给 AI 去执行。<br><br>
+      于是常会听到一些声音：觉得 AI"用处不大""还要花钱""学起来麻烦"。这些话背后，往往不是工具不行，而是还没体会到"把重复劳动交给机器、把专业判断留给人"之后的轻松。<br><br>
+      破局点其实很小：不必先成为专家，只要愿意从"我先干完、偶尔让 AI 帮把手"，转向"<span class="hl">我先把规则讲清楚，让 AI 出第一稿、我做判断与把关</span>"。这一步迈出去，技术的价值才会真正落到项目里。
+    </div>
+  </div>
+
+  <!-- 四 -->
+  <h2><span class="num">四</span>AI 技术能力总览（通用总结：技术 → 适用环节 / 对应传统手段）<span class="bar"></span></h2>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <h3>① 大语言模型 / AIGC</h3>
+      <p><span class="lbl">应用场景：</span>政策检索 · 大纲构建 · 报告撰写 · 去"AI 味"润色</p>
+      <p><span class="lbl">技术：</span>DeepSeek / 豆包 / 通义千问 / 智谱 GLM；长上下文（1M token）、链式思考（CoT）、分章节生成</p>
+      <p class="map">对应环节：资料获取 · 大纲 · 文本撰写 ｜ 对应传统：人工检索 / Word 逐字撰写</p>
+    </div>
+    <div class="tech-card">
+      <h3>② 知识库 + RAG 检索增强</h3>
+      <p><span class="lbl">应用场景：</span>基于真实资料问答 · 规范查询 · 杜绝数据造假（治"幻觉"）</p>
+      <p><span class="lbl">技术：</span>向量数据库语义检索；腾讯 IMA / Cherry Studio（支持私有化部署）</p>
+      <p class="map">对应环节：资料获取 · 规范校核 ｜ 对应传统：人工翻规范 / 文件夹归档</p>
+    </div>
+    <div class="tech-card">
+      <h3>③ 多模态生成（文生图 / 图生图）</h3>
+      <p><span class="lbl">应用场景：</span>分析图 · 效果图 · 彩平图 · 配景补人物</p>
+      <p><span class="lbl">技术：</span>ControlNet 线稿约束 · LoRA 微调（8 分钟训练专属立面）· Seedream / 即梦 · D5 / Lumion 实时 AI 渲染</p>
+      <p class="map">对应环节：图纸制作 · 效果图 ｜ 对应传统：CAD / SU 建模 / 3ds Max / PS 精修</p>
+    </div>
+    <div class="tech-card">
+      <h3>④ AI Agent 与智能体编排</h3>
+      <p><span class="lbl">应用场景：</span>成果自动质检（格式 / 数据 / 术语三校验）· 政策抓取 + PPT 一键生成 · 重复工作批处理</p>
+      <p><span class="lbl">技术：</span>Coze / Dify 工作流编排 · Agent 集群 · Zapier / 集简云跨应用联动</p>
+      <p class="map">对应环节：贯穿多环节 / 批处理 ｜ 对应传统：人工跨软件搬运与核对</p>
+    </div>
+    <div class="tech-card">
+      <h3>⑤ 语音识别与多模态解析</h3>
+      <p><span class="lbl">应用场景：</span>会议纪要转写提炼 · 现场踏勘 · 音视频速读</p>
+      <p><span class="lbl">技术：</span>ASR 语音识别（通义听悟 / 讯飞听见）· 720 云 VR · 大疆航拍解析</p>
+      <p class="map">对应环节：资料获取（音视频）· 踏勘 ｜ 对应传统：人工记录 / 听写</p>
+    </div>
+    <div class="tech-card">
+      <h3>⑥ 设计垂直 AI 工具（专业模型）</h3>
+      <p><span class="lbl">应用场景：</span>智能强排 · 指标计算 · 规范合规校验</p>
+      <p><span class="lbl">技术：</span>小库科技 AI 云 / 设计云 · 建筑学长 SU / Revit 插件实时渲染</p>
+      <p class="map">对应环节：图纸制作 · 经济测算 · 规范校核 ｜ 对应传统：手工算量 / SU 建模</p>
+    </div>
+  </div>
+
+  <!-- 五： Agent (includes cases) -->
+  <h2><span class="num">五</span>用 AI Agent 一站式完成全流程<span class="bar"></span></h2>
+  <p class="lead">不必在每个环节单独找工具——AI Agent 可把"资料 → 分析 → 文本 → 出图 → PPT → 校核 → 沉淀"串成一条自动化流水线，由一个人用自然语言驱动。</p>
+
+  <div class="sub-h"><span class="dot"></span>AI Agent 相比"平时单独用的 AI 工具"的优势</div>
+  <p class="lead" style="margin-top:0;">规划师日常已会用豆包、DeepSeek 等大模型做单点辅助（问一句、答一段，再人工复制粘贴到下一个环节）。AI Agent 的不同在于：它能<b>自己规划多步任务、记住上下文、调用代码 / 文件 / 联网 / 专业软件</b>，把原本要人在多个工具间来回搬运的流程，变成"一句话交代、它跑全程"。</p>
+  <div class="cmp">
+    <div class="col old">
+      <h4>平时单独用 AI 工具</h4>
+      <ul>
+        <li>一次一答，问答彼此独立，需人记住并搬运中间结果</li>
+        <li>多环节要反复切换：检索→写→算→出图→PPT 各开各的</li>
+        <li>长文档 / 大数据易"截断"，跨文件信息难贯通</li>
+        <li>分析停留在"单题描述统计"，不会主动做交叉、检验</li>
+        <li>步骤靠人盯，易漏环节、前后口径不一致</li>
+      </ul>
+    </div>
+    <div class="col new">
+      <h4>用 AI Agent</h4>
+      <ul>
+        <li>自主拆解任务、按序执行，全程记忆上下文与中间产物</li>
+        <li>一个入口串起检索 / 写作 / 计算 / 出图 / PPT / 校核</li>
+        <li>可调用代码（Python / pandas）处理长表与大规模数据</li>
+        <li>主动做交叉分析、统计检验与可视化，发现隐藏关系</li>
+        <li>可定时运行、本地执行，流程标准化、可追溯、合规可控</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-h"><span class="dot"></span>国内几种代表性 AI Agent</div>
+  <div class="agent-grid">
+    <div class="agent">
+      <b>WorkBuddy</b><span class="role">通用 AI 工作助手</span>
+      <p>可联网检索 / 研究、写文档报告、做表格、生成图文、执行命令与脚本、搭建自动化任务；能将上述各环节编排为一条工作流，支持本地文件与定时运行，合规可控。</p>
+    </div>
+    <div class="agent">
+      <b>豆包</b><span class="role">字节跳动</span>
+      <p>中文理解强、免费额度大；覆盖对话 / 写作 / 文生图（Seedream）/ Agent，是日常办公与轻量出图的首选入口，并支持本地文件夹深度关联与"任务模式"逐步执行。</p>
+    </div>
+    <div class="agent">
+      <b>Kimi K3</b><span class="role">月之暗面</span>
+      <p>2.8 万亿参数、1M 上下文、开源权重；Agent Swarm 最多 300 个子智能体并行，Kimi Work 为通用本地 Agent，擅长超长文档与大规模资料处理与复杂推理。</p>
+    </div>
+    <div class="agent">
+      <b>QoderWork</b><span class="role">阿里巴巴（桌面级办公 Agent）</span>
+      <p>本地运行、隐私优先；覆盖文件整理 / 数据分析 / 文档生成 / 研究整合 / 浏览器自动化，支持 MCP 与自定义技能，千问 Qwen3.7-Max 驱动，打通钉钉 / 高德 / 阿里云等生态。</p>
+    </div>
+  </div>
+
+  <div class="skill-box">
+    <span class="ic">🧩</span>
+    <div class="tx">
+      <h4>AI Agent 的关键能力：Skill（经验可沉淀、可复用）</h4>
+      <ul>
+        <li><b>做过一次，即可复用：</b>任何一项工作——无论是一个技术环节，还是整条流程——只要跑通过一次，其需求、经验、要求与模板都能沉淀为一个 Skill，下次直接调用，不必从零再来。</li>
+        <li><b>专项 Skill 即"经验工具"：</b>Agent 生态里已有大量针对某一方面的特长 Skill（如"规划文本校核""体检指标标准化""经济测算建模"），开箱即用，相当于把别人的经验变成自己的工具。</li>
+        <li><b>自己也能生成：</b>不满足于现成 Skill 时，可把自己的做法一键封装成专属 Skill，形成团队可复用的经验资产——越用越聪明，越沉淀越省力。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Case 1 -->
+  <div class="sub-h"><span class="dot"></span>案例一：城市更新片区策划报告 AI 生成全流程（零基础八步）</div>
+  <div class="case-intro">
+    以《城市更新片区策划报告 AI 生成完全指南》中"零基础实战教学"的<b>八步法</b>为例。本案例以豆包的<b>「任务模式」</b>为执行载体：关联本地文件夹作为工作区，AI 按八步依次推进并记忆上下文，逐步输出成果；流程内置<b>三大人工确认节点</b>（大纲 / 核心数据 / 项目清单），确保专业判断与数据真实始终由规划师把关——AI 负责提速，人负责把关。<br>
+    完整指南：<a href="https://yangtf2000.github.io/nav/" target="_blank">https://yangtf2000.github.io/nav/</a>
+  </div>
+
+  <div class="preproc">
+    <b>执行方式说明：</b>上述八步全部在 <b>豆包的「任务模式」单一任务</b> 内完成，AI 按步骤记忆上下文、每次自动生成不同成果文件。对于数据清洗、专项统计分析等可先用有特长的工具（如 DeepSeek / 豆包数据对话、Kimi 长表、Python Agent）做<b>预处理</b>，将产物作为基础资料放入项目文件夹；豆包读取文件夹内容（本地文件不对外上传），再在任务中统一推进后续撰写与出图。
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <span class="tl-dot">1</span>
+      <div class="tl-body">
+        <p class="t-title">创建项目 · 建立本地文件夹并关联 AI</p>
+        <p class="t-goal">目标：让 AI 认识项目，加载基础资料，建立工作上下文</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">在<b>豆包「任务模式」</b>下关联项目本地文件夹作为工作区，先让 AI 通读政策文件与上位规划，输出《项目初步认知简报》（含片区类型判断：综合型 / 历史街区 / 老旧厂区 / 城中村）。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：项目初步认知简报</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">2</span>
+      <div class="tl-body">
+        <p class="t-title">数据整理 · 体检指标结构化汇总</p>
+        <p class="t-goal">目标：将分散数据整理成标准化"体检指标数据表"</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">上传基础数据台账（Excel），AI 按"基础指标 7 大类 + 特色指标"归类；每项含名称 / 性质 / 现状值 / 评价结论，红色预警🔴标注，缺失标注"待补充"，<b>严禁编造</b>。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：片区体检指标数据表（数据清洗可先用专项工具预处理，产物入项目文件夹）</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">3</span>
+      <div class="tl-body">
+        <p class="t-title">大纲构建 · 确认报告章节框架</p>
+        <p class="t-goal">目标：确定大纲版本与篇幅分配</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">与 AI 确认章节框架，细化到三级标题，标注重点章节、特色指标选配方案，说明"八大更新方向""四大引领原则"如何落位。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：章节框架表</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">4</span>
+      <div class="tl-body">
+        <p class="t-title">分章撰写 · 核心章节逐章生成</p>
+        <p class="t-goal">目标：按大纲逐章生成正文</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">一章一章来，每章含"数据—分析—结论"三层；数据引用第二步指标表保持一致，每章配图处标注【配图：XXX 图】，不留空话。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：各章文本初稿</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">5</span>
+      <div class="tl-body">
+        <p class="t-title">专项分析 · 特色模块深化</p>
+        <p class="t-goal">目标：完成更新潜力评估、重点项目概念规划、资金路径</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">基于问题诊断做"问题→潜力"转化；基于定位策划重点项目概念方案；基于投资设计多元资金与社会资本路径，每个渠道须有政策依据。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：潜力分级、概念规划、资金路径</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">6</span>
+      <div class="tl-body">
+        <p class="t-title">核心产出 · 项目清单与资金测算</p>
+        <p class="t-goal">目标：生成项目包总表与资金测算表</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">按空间区域打包项目包，子项目对应具体体检问题；标注投资 / 资金来源 / 改造性质 / 优先序 / 时序；数据自动联动汇总。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：项目包总表、资金平衡表</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">7</span>
+      <div class="tl-body">
+        <p class="t-title">全文统稿 · 首尾章节 + 质检优化</p>
+        <p class="t-goal">目标：完成封面 / 目录 / 结语，做全文质量检查</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">撰写项目概况与结语；AI 做数据一致性 / 术语统一 / 逻辑连贯 / 格式规范四检，输出分级质检报告。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：完整初稿 + 质检报告</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-dot">8</span>
+      <div class="tl-body">
+        <p class="t-title">成果交付 · PPT + 全套附件</p>
+        <p class="t-goal">目标：整理成 PPT 汇报稿与 Word 文本，生成附录</p>
+        <div class="tl-cols">
+          <div class="tl-box"><span class="k">怎么做（AI）</span><span class="v">按标准 PPT 模版整理，用 AI 画布做版式美化与图表（饼图 / 甘特图）自动生成；附录从正文数据自动派生。</span></div>
+          <div class="tl-box"><span class="k">工具 / 产出</span><span class="v"><span class="tool">豆包（任务模式·单一任务）</span><br><span class="out">产出：PPT 汇报稿、Word 文本、附录 A–D</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <span class="gt">⚠ 三大人工确认节点（AI 不替代）：</span>
+    <span class="chip">① 大纲框架确认</span>
+    <span class="chip">② 核心数据确认</span>
+    <span class="chip">③ 项目清单与资金测算确认</span>
+  </div>
+
+  <!-- Case 2 (key) -->
+  <div class="sub-h"><span class="dot"></span>案例二（重点）：城市体检居民问卷调查的 AI 交叉分析<span class="tag-key">重点</span></div>
+  <div class="case-intro">
+    参考住建部<b>城市体检社会满意度问卷</b>与老旧小区改造居民意愿调查框架，对片区 <b>N=400</b> 户居民开展问卷调查（年龄 / 学历 / 居住时长 / 住房身份 + 更新议题重视度 + 参与意愿 + 整体满意度）。<b>传统做法只做单题频率罗列，看不到群体间的结构性矛盾；用 AI Agent（大模型 + Python/pandas 交叉表 + 卡方检验 + 可视化）可一键做交叉比对，发现简单统计忽略的深层问题。</b>
+  </div>
+
+  <div class="old-way">
+    <b>传统简单统计（仅单题频率，易误导）：</b>① 78% 居民"非常重视"加装电梯；② 65% 希望增加养老 / 公共活动空间；③ 整体满意度 3.4 / 5（"还行"）。——三个孤立百分比，看不出谁最需要、谁在发声、均值背后谁被掩盖。
+  </div>
+
+  <div class="x-block">
+    <p class="x-cap"><b>发现一 · 年龄 × 加装电梯意愿：最需要电梯的人，恰恰没有表决能力</b></p>
+    <table class="x-tab">
+      <thead>
+        <tr><th>年龄分组</th><th>样本</th><th>"非常重视"加装电梯</th><th>其中产权人（业主）占比</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="lab">青年 18–35</td><td>130</td><td><div class="barwrap"><div class="barfill" style="width:24%"></div><span class="barval">24%</span></div></td><td><div class="barwrap"><div class="barfill good" style="width:41%"></div><span class="barval">41%</span></div></td></tr>
+        <tr><td class="lab">中年 36–55</td><td>150</td><td><div class="barwrap"><div class="barfill" style="width:51%"></div><span class="barval">51%</span></div></td><td><div class="barwrap"><div class="barfill good" style="width:72%"></div><span class="barval">72%</span></div></td></tr>
+        <tr><td class="lab">老年 56+</td><td>120</td><td><div class="barwrap"><div class="barfill warn" style="width:83%"></div><span class="barval">83%</span></div></td><td><div class="barwrap"><div class="barfill good" style="width:37%"></div><span class="barval">37%</span></div></td></tr>
+      </tbody>
+    </table>
+    <div class="x-find">
+      <span class="n">1</span>
+      <div class="t">老年群体 <b>83%</b> 强烈要求电梯，但其中仅 <b>37%</b> 是产权人——最需要电梯的群体，恰是加装政策"业主表决 + 出资"规则下最缺话语权的租户 / 随迁老人；而青年业主（41%）仅 24% 重视电梯却握有多数表决权。<b>单看"78% 要重视"会误判为民意一致，实际是"需求主体"与"决策主体"错位</b>，电梯加装将长期卡在表决。→ 更新方案须设置实际使用人意见通道。</div>
+    </div>
+  </div>
+
+  <div class="x-block">
+    <p class="x-cap"><b>发现二 · 居住时长 × 整体满意度：均值掩盖了最该被服务的老居民</b></p>
+    <table class="x-tab">
+      <thead>
+        <tr><th>居住时长</th><th>样本</th><th>整体满意度（1–5）</th><th>对养老 / 公共空间重视度</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="lab">短期 &lt;3 年</td><td>95</td><td><div class="barwrap"><div class="barfill good" style="width:78%"></div><span class="barval">3.9</span></div></td><td>较低（多为年轻租户，依赖弱）</td></tr>
+        <tr><td class="lab">中期 3–10 年</td><td>130</td><td><div class="barwrap"><div class="barfill" style="width:70%"></div><span class="barval">3.5</span></div></td><td>中等</td></tr>
+        <tr><td class="lab">长期 ≥10 年</td><td>175</td><td><div class="barwrap"><div class="barfill warn" style="width:62%"></div><span class="barval">3.1</span></div></td><td>最高（高度依赖社区设施）</td></tr>
+      </tbody>
+    </table>
+    <div class="x-find">
+      <span class="n">2</span>
+      <div class="t">整体 3.4 看似"还行"，但<b>长期居住者（占比 44%）满意度最低（3.1）且对养老 / 公共空间需求最高</b>，短期租户（满意度 3.9）拉高了均值。若按均值分配改造资源，会系统性偏离真正高依赖、高需求的老居民。<b>交叉分析指向：资源应优先投向"长期居住 + 低满意 + 高需求"交叉群体</b>，而非被整体均值掩盖。</div>
+    </div>
+  </div>
+
+  <div class="x-block">
+    <p class="x-cap"><b>发现三 · 学历 × 参与意愿 × 住房身份：听证会的代表性偏差</b></p>
+    <table class="x-tab">
+      <thead>
+        <tr><th>学历分组</th><th>样本</th><th>愿意参与议事</th><th>其中长期居住的业主占比</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="lab">初中及以下</td><td>140</td><td><div class="barwrap"><div class="barfill warn" style="width:21%"></div><span class="barval">21%</span></div></td><td><div class="barwrap"><div class="barfill good" style="width:84%"></div><span class="barval">84%</span></div></td></tr>
+        <tr><td class="lab">高中 / 中专</td><td>130</td><td><div class="barwrap"><div class="barfill" style="width:44%"></div><span class="barval">44%</span></div></td><td><div class="barwrap"><div class="barfill good" style="width:60%"></div><span class="barval">60%</span></div></td></tr>
+        <tr><td class="lab">大专及以上</td><td>130</td><td><div class="barwrap"><div class="barfill good" style="width:69%"></div><span class="barval">69%</span></div></td><td><div class="barwrap"><div class="barfill good" style="width:42%"></div><span class="barval">42%</span></div></td></tr>
+      </tbody>
+    </table>
+    <div class="x-find">
+      <span class="n">3</span>
+      <div class="t">高学历群体参与意愿最高（69%），但其中 <b>58% 是短期租户</b>（流动强、利益弱相关）；低学历老年业主参与意愿最低（21%），却 <b>84% 长期居住、高度依赖社区</b>。<b>传统"开听证会 / 问卷征集"易吸引高参与者，导致"参与度高的人说了不算、真正利益相关的人不发声"</b>——改造诉求代表性失真。→ AI 可做分层加权校正，让低参与的高利益相关群体被听见。</div>
+    </div>
+  </div>
+
+  <div class="sub-h"><span class="dot"></span>数据的可视化表达（由 AI Agent 一键生成）</div>
+  <p class="viz-note">下面三张图均由 AI Agent（Python / pandas + matplotlib）从同一份 N=400 问卷数据一键生成，可直接纳入报告或附录——相比文字"逐题罗列"，图形让群体差异与结构性矛盾一眼可见，也便于向居民与决策层直观呈现。</p>
+  <div class="viz-grid">
+    <div class="viz-card">
+      <h4>直方图 · 整体满意度分布</h4>
+      <p class="vsub">N=400，1–5 分频数；均值 3.4 由偏低的 2–3 分拉低</p>
+      <div class="histo">
+        <div class="bar" style="height:31px"><span class="bv">35</span></div>
+        <div class="bar" style="height:62px"><span class="bv">70</span></div>
+        <div class="bar" style="height:115px"><span class="bv">130</span></div>
+        <div class="bar" style="height:97px"><span class="bv">110</span></div>
+        <div class="bar" style="height:49px"><span class="bv">55</span></div>
+      </div>
+      <div class="xlab"><span>1分</span><span>2分</span><span>3分</span><span>4分</span><span>5分</span></div>
+    </div>
+    <div class="viz-card">
+      <h4>饼图 · 住房身份构成</h4>
+      <p class="vsub">产权结构决定"谁在表决"，呼应发现一 / 三</p>
+      <div class="pie"></div>
+      <div class="pie-leg">
+        <div class="li"><span class="sw" style="background:#38bdf8"></span>产权人 / 业主 52%</div>
+        <div class="li"><span class="sw" style="background:#818cf8"></span>租户 33%</div>
+        <div class="li"><span class="sw" style="background:#fbbf24"></span>随迁老人 15%</div>
+      </div>
+    </div>
+    <div class="viz-card">
+      <h4>堆叠条形图 · 各年龄组首要诉求</h4>
+      <p class="vsub">老年组"加装电梯"占比最高（呼应发现一）</p>
+      <div class="stack-row">
+        <div class="sl">青年 18–35</div>
+        <div class="stack-bar"><span style="width:20%;background:#38bdf8"></span><span style="width:35%;background:#34d399"></span><span style="width:45%;background:#818cf8"></span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">中年 36–55</div>
+        <div class="stack-bar"><span style="width:48%;background:#38bdf8"></span><span style="width:33%;background:#34d399"></span><span style="width:19%;background:#818cf8"></span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">老年 56+</div>
+        <div class="stack-bar"><span style="width:62%;background:#38bdf8"></span><span style="width:30%;background:#34d399"></span><span style="width:8%;background:#818cf8"></span></div>
+      </div>
+      <div class="stack-leg">
+        <div class="li"><span class="sw" style="background:#38bdf8"></span>加装电梯</div>
+        <div class="li"><span class="sw" style="background:#34d399"></span>养老/公共空间</div>
+        <div class="li"><span class="sw" style="background:#818cf8"></span>停车/交通</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="x-find" style="border-left-color:var(--good); background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(56,189,248,.06));">
+    <span class="n" style="background:linear-gradient(135deg,#34d399,#0ea5e9);">✓</span>
+    <div class="t"><b>小结：</b>同一份问卷，简单统计只给出"78% 要重视、满意度 3.4"的平面结论；AI 交叉分析（年龄 / 学历 / 居住时长 / 住房身份 × 议题与满意度）则暴露出 <b>需求—决策错配、均值掩盖弱势群体、参与代表性偏差</b> 三类结构性矛盾——这正是靠"逐题数数"永远发现不了、却直接决定更新方案成败的关键。AI 还能顺手产出交叉列联表、卡方显著性与堆叠条形图，让问题一眼可见。</div>
+  </div>
+
+  <div class="case-end">
+    <b>编排为 Agent 流水线：</b>上述两个案例（报告生成八步 + 问卷交叉分析）若由 WorkBuddy / Kimi Work / QoderWork 等 Agent 编排，可串成自动化流水线——规划师只需在关键节点做确认，其余"资料读取 → 指标整理 → 大纲 → 撰写 → 测算 → 交叉分析 → 出图 / PPT"由 AI 驱动，无需在多个工具间来回切换。
+  </div>
+
+  <div class="foot">
+    说明：本页工具与流程均来自部门既有实践（设计院 AI 实战指南、内部 AI 应用导航及《城市更新片区策划报告 AI 生成完全指南》）；案例二问卷为基于公开城市体检 / 老旧小区改造问卷框架的示例数据（N=400），用于说明 AI 交叉分析相较简单统计的优势，非真实调查发布数据。
+  </div>
+
+</div>
+
+    
+    

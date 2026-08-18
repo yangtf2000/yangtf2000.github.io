@@ -1,0 +1,1425 @@
+---
+layout: post
+title: "城市体检报告AI生成完全指南"
+date: 2026-08-13
+category: work
+tags: [城市体检, AI]
+excerpt: "基于住建部2026年工作手册 · 豆包Agent零基础实战教学"
+---
+
+<link rel="stylesheet" href="/assets/theme.css"><link rel="stylesheet" href="/assets/force-dark.css"><link rel="stylesheet" href="/assets/city-override.css"><link rel="stylesheet" href="/assets/site.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif);
+  min-height: 100vh;
+  line-height: 1.8;
+  color: var(--text, #e8ecf4);
+}
+
+.container { max-width: 1280px; margin: 0 auto; }
+
+.header { text-align:center; color:#fff; margin-bottom:50px; }
+.header h1 { font-size:2.5rem; font-weight:700; margin-bottom:15px; text-shadow:0 2px 10px rgba(0,0,0,0.4); }
+.header p { font-size:1.1rem; opacity:0.9; max-width:700px; margin:0 auto; }
+.header .badge {
+  display:inline-block;
+  background: rgba(255,255,255,0.10);
+  border:1px solid var(--card-border, rgba(255,255,255,0.16));
+  padding:6px 18px; border-radius:20px; font-size:0.9rem; margin-top:15px;
+  backdrop-filter: blur(10px); color:#fff;
+}
+
+.nav-tabs { display:flex; justify-content:center; gap:10px; margin-bottom:40px; flex-wrap:wrap; }
+.nav-tab {
+  padding:12px 28px;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted, #9aa6bf);
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+  border-radius:30px; cursor:pointer; font-size:1rem; font-weight:500;
+  transition: all .3s; backdrop-filter: blur(10px);
+}
+.nav-tab:hover, .nav-tab.active {
+  background: rgba(129,140,248,0.20);
+  color:#fff;
+  border-color: var(--accent1, #818cf8);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(56,189,248,0.25);
+}
+
+.section {
+  display:none;
+  background: rgba(255,255,255,0.05);
+  border:1px solid var(--card-border, rgba(255,255,255,0.10));
+  border-radius:20px;
+  padding:40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  margin-bottom:30px;
+}
+.section.active { display:block; animation: fadeIn .5s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+
+.section-title { font-size:1.8rem; color:#fff; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+.section-title .icon {
+  width:45px; height:45px;
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:1.3rem;
+}
+.section-desc { color: var(--muted,#9aa6bf); margin-bottom:30px; padding-left:57px; font-size:0.95rem; }
+
+.subsection-title {
+  font-size:1.3rem; color:#fff; margin:35px 0 18px;
+  padding-bottom:10px; border-bottom:2px solid var(--card-border, rgba(255,255,255,0.12));
+  display:flex; align-items:center; gap:10px;
+}
+
+.main-card {
+  border-radius:18px; overflow:hidden;
+  box-shadow: 0 10px 40px rgba(56,189,248,0.18);
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+}
+.main-card-header {
+  padding:30px;
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  color:#fff; position:relative;
+}
+.main-card-header h3 { font-size:1.6rem; margin-bottom:8px; }
+.main-card-header .subtitle { opacity:0.92; font-size:1rem; }
+
+.main-card-body {
+  background: rgba(255,255,255,0.04);
+  padding:30px;
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:25px;
+}
+
+.card-section {
+  background: rgba(255,255,255,0.05);
+  border:1px solid var(--card-border, rgba(255,255,255,0.10));
+  border-left:4px solid var(--accent1,#818cf8);
+  border-radius:12px; padding:20px;
+}
+.card-section h4 { color:#fff; margin-bottom:12px; font-size:1.05rem; display:flex; align-items:center; gap:8px; }
+.card-section p { color: var(--muted,#9aa6bf); font-size:0.9rem; line-height:1.7; margin-bottom:12px; }
+.card-section ul { list-style:none; }
+.card-section li { font-size:0.9rem; color: var(--text,#e8ecf4); padding:4px 0 4px 15px; position:relative; }
+.card-section li::before { content:'•'; position:absolute; left:0; color: var(--accent2,#38bdf8); font-weight:bold; }
+.card-section li strong { color:#fff; }
+
+.indicator-table { width:100%; border-collapse:collapse; margin:20px 0; font-size:0.9rem; }
+.indicator-table th {
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  color:#fff; padding:12px 15px; text-align:left; font-weight:500;
+}
+.indicator-table th:first-child { border-radius:10px 0 0 0; }
+.indicator-table th:last-child { border-radius:0 10px 0 0; }
+.indicator-table td { padding:12px 15px; border-bottom:1px solid var(--card-border, rgba(255,255,255,0.10)); color: var(--text,#e8ecf4); }
+.indicator-table tr:hover td { background: rgba(255,255,255,0.07); }
+.indicator-table .dim-col { font-weight:600; color: var(--accent2,#38bdf8); width:100px; }
+.indicator-table .num-col { width:60px; text-align:center; font-weight:600; color: var(--accent2,#38bdf8); }
+.total-row td { background: rgba(129,140,248,0.12); font-weight:600; color:#fff; }
+
+.agent-compare { display:grid; grid-template-columns:1fr 1fr; gap:25px; margin:25px 0; }
+.agent-card { border:1px solid var(--card-border, rgba(255,255,255,0.12)); border-radius:15px; padding:25px; background: rgba(255,255,255,0.05); transition: all .3s; }
+.agent-card:hover { border-color: var(--accent1,#818cf8); box-shadow:0 10px 30px rgba(56,189,248,0.18); }
+.agent-card.recommended { border-color: var(--accent1,#818cf8); background: rgba(129,140,248,0.12); }
+.agent-name { font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+.agent-badge { font-size:0.75rem; padding:3px 12px; background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8)); color:#fff; border-radius:12px; font-weight:500; }
+.agent-desc { color: var(--muted,#9aa6bf); font-size:0.9rem; margin-bottom:15px; }
+.agent-features { list-style:none; }
+.agent-features li { font-size:0.88rem; color: var(--text,#e8ecf4); padding:5px 0 5px 24px; display:flex; align-items:flex-start; gap:8px; position:relative; }
+.agent-features li::before { content:'✓'; position:absolute; left:0; color: var(--accent3,#34d399); font-weight:bold; flex-shrink:0; }
+
+.advantage-box {
+  background: rgba(52,211,153,0.10);
+  border:1px solid rgba(52,211,153,0.28);
+  border-radius:15px; padding:25px; margin:25px 0;
+}
+.advantage-box h3 { color:#34d399; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.advantage-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:15px; }
+.advantage-item { background: rgba(255,255,255,0.06); border:1px solid rgba(52,211,153,0.18); border-radius:10px; padding:15px; box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+.advantage-item h4 { color:#6ee7b7; font-size:1rem; margin-bottom:6px; }
+.advantage-item p { color: var(--muted,#9aa6bf); font-size:0.85rem; line-height:1.5; }
+
+.prerequisite-box {
+  background: rgba(245,158,11,0.10);
+  border:1px solid rgba(245,158,11,0.30);
+  border-radius:12px; padding:20px 25px; margin:25px 0;
+}
+.prerequisite-box h4 { color:#fbbf24; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.prerequisite-box ul { list-style:none; }
+.prerequisite-box li { padding:5px 0 5px 25px; color: var(--text,#e8ecf4); font-size:0.9rem; position:relative; }
+.prerequisite-box li::before { content:'⚠'; position:absolute; left:0; }
+.prerequisite-box li strong { color:#fff; }
+
+.data-table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:0.9rem; }
+.data-table th { background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8)); color:#fff; padding:14px 16px; text-align:left; font-weight:500; font-size:0.95rem; }
+.data-table th:first-child { border-radius:10px 0 0 0; }
+.data-table th:last-child { border-radius:0 10px 0 0; }
+.data-table td { padding:14px 16px; border-bottom:1px solid var(--card-border, rgba(255,255,255,0.10)); font-size:0.9rem; color: var(--text,#e8ecf4); vertical-align:top; }
+.data-table tr:hover td { background: rgba(255,255,255,0.07); }
+.data-table .category { font-weight:600; color: var(--accent2,#38bdf8); width:110px; }
+
+.steps-container { position:relative; padding-left:40px; }
+.steps-container::before { content:''; position:absolute; left:18px; top:0; bottom:0; width:3px; background:linear-gradient(to bottom, var(--accent1,#818cf8), var(--accent2,#38bdf8)); border-radius:2px; }
+.step-item { position:relative; margin-bottom:40px; }
+.step-item:last-child { margin-bottom:0; }
+.step-number {
+  position:absolute; left:-40px; top:0; width:40px; height:40px;
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  color:#06121f; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:1rem; box-shadow:0 4px 15px rgba(56,189,248,0.4); z-index:1;
+}
+.step-title { font-size:1.25rem; font-weight:600; color:#fff; margin-bottom:12px; padding-left:15px; }
+.step-content { background: rgba(255,255,255,0.05); border:1px solid var(--card-border, rgba(255,255,255,0.10)); border-radius:12px; padding:22px; margin-left:15px; }
+.step-content h5 { color:#fff; font-size:1rem; margin:15px 0 8px; }
+.step-content h5:first-child { margin-top:0; }
+.step-content p { color: var(--muted,#9aa6bf); font-size:0.92rem; margin-bottom:8px; }
+.step-content ul, .step-content ol { padding-left:22px; color: var(--text,#e8ecf4); font-size:0.92rem; margin-bottom:10px; }
+.step-content li { padding:3px 0; color: var(--text,#e8ecf4); }
+.step-content li strong { color:#fff; }
+
+.prompt-box {
+  background:#0b0e17; color:#a6e3a1; border-radius:10px; padding:15px 20px;
+  font-family:'Consolas','Monaco','Courier New',monospace; font-size:0.83rem;
+  margin:12px 0; overflow-x:auto; line-height:1.7; white-space:pre-wrap;
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+}
+.prompt-box .comment { color:#6c7086; font-style:italic; }
+
+.step-tip {
+  background: rgba(56,189,248,0.10);
+  border-left:3px solid var(--accent2,#38bdf8);
+  padding:10px 15px; margin-top:12px; border-radius:0 8px 8px 0;
+  font-size:0.88rem; color:#bae6fd;
+}
+.step-tip strong { color:#7dd3fc; }
+
+.step-warn {
+  background: rgba(245,158,11,0.10);
+  border-left:3px solid #f59e0b;
+  padding:10px 15px; margin-top:12px; border-radius:0 8px 8px 0;
+  font-size:0.88rem; color:#fcd34d;
+}
+.step-warn strong { color:#fbbf24; }
+
+.skill-summary {
+  background: linear-gradient(135deg, rgba(129,140,248,0.20), rgba(56,189,248,0.18));
+  border:1px solid rgba(129,140,248,0.30);
+  border-radius:16px; padding:35px; color:#fff; margin-top:40px;
+}
+.skill-summary h3 { font-size:1.5rem; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+.skill-summary .skill-intro { opacity:0.92; margin-bottom:25px; font-size:0.95rem; color:#e2e8f5; }
+
+.skill-structure {
+  background: rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:12px; padding:25px; margin-bottom:25px;
+}
+.skill-structure h4 { font-size:1.1rem; margin-bottom:15px; color:#fff; }
+
+.skill-modules { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; }
+.skill-module { background: rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:12px 15px; font-size:0.88rem; color:#e2e8f5; }
+.skill-module strong { display:block; margin-bottom:4px; color:#fff; }
+
+.example-box {
+  background: rgba(255,255,255,0.06);
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+  border-radius:12px; padding:25px; color:#e8ecf4;
+}
+.example-box h4 { color: var(--accent2,#38bdf8); margin-bottom:15px; display:flex; align-items:center; gap:8px; }
+.example-prompt {
+  background:#0b0e17; border:1px solid var(--card-border, rgba(255,255,255,0.12));
+  border-radius:8px; padding:15px; font-family:'Consolas','Monaco',monospace;
+  font-size:0.82rem; line-height:1.7; color:#cbd5e1; max-height:400px; overflow-y:auto;
+}
+
+.footer { text-align:center; color: var(--muted,#9aa6bf); margin-top:40px; font-size:0.9rem; }
+
+@media (max-width:768px) {
+  .header h1 { font-size:1.8rem; }
+  .section { padding:25px; }
+  .agent-compare { grid-template-columns:1fr; }
+  .steps-container { padding-left:30px; }
+  .step-number { left:-30px; width:32px; height:32px; font-size:0.9rem; }
+}
+</style><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif);
+  min-height: 100vh;
+  line-height: 1.8;
+  color: var(--text, #e8ecf4);
+}
+
+.container { max-width: 1280px; margin: 0 auto; }
+
+.header { text-align:center; color:#fff; margin-bottom:50px; }
+.header h1 { font-size:2.5rem; font-weight:700; margin-bottom:15px; text-shadow:0 2px 10px rgba(0,0,0,0.4); }
+.header p { font-size:1.1rem; opacity:0.9; max-width:700px; margin:0 auto; }
+.header .badge {
+  display:inline-block;
+  background: rgba(255,255,255,0.10);
+  border:1px solid var(--card-border, rgba(255,255,255,0.16));
+  padding:6px 18px; border-radius:20px; font-size:0.9rem; margin-top:15px;
+  backdrop-filter: blur(10px); color:#fff;
+}
+
+.nav-tabs { display:flex; justify-content:center; gap:10px; margin-bottom:40px; flex-wrap:wrap; }
+.nav-tab {
+  padding:12px 28px;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted, #9aa6bf);
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+  border-radius:30px; cursor:pointer; font-size:1rem; font-weight:500;
+  transition: all .3s; backdrop-filter: blur(10px);
+}
+.nav-tab:hover, .nav-tab.active {
+  background: rgba(129,140,248,0.20);
+  color:#fff;
+  border-color: var(--accent1, #818cf8);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(56,189,248,0.25);
+}
+
+.section {
+  display:none;
+  background: rgba(255,255,255,0.05);
+  border:1px solid var(--card-border, rgba(255,255,255,0.10));
+  border-radius:20px;
+  padding:40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  margin-bottom:30px;
+}
+.section.active { display:block; animation: fadeIn .5s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+
+.section-title { font-size:1.8rem; color:#fff; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+.section-title .icon {
+  width:45px; height:45px;
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:1.3rem;
+}
+.section-desc { color: var(--muted,#9aa6bf); margin-bottom:30px; padding-left:57px; font-size:0.95rem; }
+
+.subsection-title {
+  font-size:1.3rem; color:#fff; margin:35px 0 18px;
+  padding-bottom:10px; border-bottom:2px solid var(--card-border, rgba(255,255,255,0.12));
+  display:flex; align-items:center; gap:10px;
+}
+
+.main-card {
+  border-radius:18px; overflow:hidden;
+  box-shadow: 0 10px 40px rgba(56,189,248,0.18);
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+}
+.main-card-header {
+  padding:30px;
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  color:#fff; position:relative;
+}
+.main-card-header h3 { font-size:1.6rem; margin-bottom:8px; }
+.main-card-header .subtitle { opacity:0.92; font-size:1rem; }
+
+.main-card-body {
+  background: rgba(255,255,255,0.04);
+  padding:30px;
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:25px;
+}
+
+.card-section {
+  background: rgba(255,255,255,0.05);
+  border:1px solid var(--card-border, rgba(255,255,255,0.10));
+  border-left:4px solid var(--accent1,#818cf8);
+  border-radius:12px; padding:20px;
+}
+.card-section h4 { color:#fff; margin-bottom:12px; font-size:1.05rem; display:flex; align-items:center; gap:8px; }
+.card-section p { color: var(--muted,#9aa6bf); font-size:0.9rem; line-height:1.7; margin-bottom:12px; }
+.card-section ul { list-style:none; }
+.card-section li { font-size:0.9rem; color: var(--text,#e8ecf4); padding:4px 0 4px 15px; position:relative; }
+.card-section li::before { content:'•'; position:absolute; left:0; color: var(--accent2,#38bdf8); font-weight:bold; }
+.card-section li strong { color:#fff; }
+
+.indicator-table { width:100%; border-collapse:collapse; margin:20px 0; font-size:0.9rem; }
+.indicator-table th {
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  color:#fff; padding:12px 15px; text-align:left; font-weight:500;
+}
+.indicator-table th:first-child { border-radius:10px 0 0 0; }
+.indicator-table th:last-child { border-radius:0 10px 0 0; }
+.indicator-table td { padding:12px 15px; border-bottom:1px solid var(--card-border, rgba(255,255,255,0.10)); color: var(--text,#e8ecf4); }
+.indicator-table tr:hover td { background: rgba(255,255,255,0.07); }
+.indicator-table .dim-col { font-weight:600; color: var(--accent2,#38bdf8); width:100px; }
+.indicator-table .num-col { width:60px; text-align:center; font-weight:600; color: var(--accent2,#38bdf8); }
+.total-row td { background: rgba(129,140,248,0.12); font-weight:600; color:#fff; }
+
+.agent-compare { display:grid; grid-template-columns:1fr 1fr; gap:25px; margin:25px 0; }
+.agent-card { border:1px solid var(--card-border, rgba(255,255,255,0.12)); border-radius:15px; padding:25px; background: rgba(255,255,255,0.05); transition: all .3s; }
+.agent-card:hover { border-color: var(--accent1,#818cf8); box-shadow:0 10px 30px rgba(56,189,248,0.18); }
+.agent-card.recommended { border-color: var(--accent1,#818cf8); background: rgba(129,140,248,0.12); }
+.agent-name { font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+.agent-badge { font-size:0.75rem; padding:3px 12px; background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8)); color:#fff; border-radius:12px; font-weight:500; }
+.agent-desc { color: var(--muted,#9aa6bf); font-size:0.9rem; margin-bottom:15px; }
+.agent-features { list-style:none; }
+.agent-features li { font-size:0.88rem; color: var(--text,#e8ecf4); padding:5px 0 5px 24px; display:flex; align-items:flex-start; gap:8px; position:relative; }
+.agent-features li::before { content:'✓'; position:absolute; left:0; color: var(--accent3,#34d399); font-weight:bold; flex-shrink:0; }
+
+.advantage-box {
+  background: rgba(52,211,153,0.10);
+  border:1px solid rgba(52,211,153,0.28);
+  border-radius:15px; padding:25px; margin:25px 0;
+}
+.advantage-box h3 { color:#34d399; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.advantage-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:15px; }
+.advantage-item { background: rgba(255,255,255,0.06); border:1px solid rgba(52,211,153,0.18); border-radius:10px; padding:15px; box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+.advantage-item h4 { color:#6ee7b7; font-size:1rem; margin-bottom:6px; }
+.advantage-item p { color: var(--muted,#9aa6bf); font-size:0.85rem; line-height:1.5; }
+
+.prerequisite-box {
+  background: rgba(245,158,11,0.10);
+  border:1px solid rgba(245,158,11,0.30);
+  border-radius:12px; padding:20px 25px; margin:25px 0;
+}
+.prerequisite-box h4 { color:#fbbf24; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.prerequisite-box ul { list-style:none; }
+.prerequisite-box li { padding:5px 0 5px 25px; color: var(--text,#e8ecf4); font-size:0.9rem; position:relative; }
+.prerequisite-box li::before { content:'⚠'; position:absolute; left:0; }
+.prerequisite-box li strong { color:#fff; }
+
+.data-table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:0.9rem; }
+.data-table th { background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8)); color:#fff; padding:14px 16px; text-align:left; font-weight:500; font-size:0.95rem; }
+.data-table th:first-child { border-radius:10px 0 0 0; }
+.data-table th:last-child { border-radius:0 10px 0 0; }
+.data-table td { padding:14px 16px; border-bottom:1px solid var(--card-border, rgba(255,255,255,0.10)); font-size:0.9rem; color: var(--text,#e8ecf4); vertical-align:top; }
+.data-table tr:hover td { background: rgba(255,255,255,0.07); }
+.data-table .category { font-weight:600; color: var(--accent2,#38bdf8); width:110px; }
+
+.steps-container { position:relative; padding-left:40px; }
+.steps-container::before { content:''; position:absolute; left:18px; top:0; bottom:0; width:3px; background:linear-gradient(to bottom, var(--accent1,#818cf8), var(--accent2,#38bdf8)); border-radius:2px; }
+.step-item { position:relative; margin-bottom:40px; }
+.step-item:last-child { margin-bottom:0; }
+.step-number {
+  position:absolute; left:-40px; top:0; width:40px; height:40px;
+  background: linear-gradient(135deg, var(--accent1,#818cf8), var(--accent2,#38bdf8));
+  color:#06121f; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:1rem; box-shadow:0 4px 15px rgba(56,189,248,0.4); z-index:1;
+}
+.step-title { font-size:1.25rem; font-weight:600; color:#fff; margin-bottom:12px; padding-left:15px; }
+.step-content { background: rgba(255,255,255,0.05); border:1px solid var(--card-border, rgba(255,255,255,0.10)); border-radius:12px; padding:22px; margin-left:15px; }
+.step-content h5 { color:#fff; font-size:1rem; margin:15px 0 8px; }
+.step-content h5:first-child { margin-top:0; }
+.step-content p { color: var(--muted,#9aa6bf); font-size:0.92rem; margin-bottom:8px; }
+.step-content ul, .step-content ol { padding-left:22px; color: var(--text,#e8ecf4); font-size:0.92rem; margin-bottom:10px; }
+.step-content li { padding:3px 0; color: var(--text,#e8ecf4); }
+.step-content li strong { color:#fff; }
+
+.prompt-box {
+  background:#0b0e17; color:#a6e3a1; border-radius:10px; padding:15px 20px;
+  font-family:'Consolas','Monaco','Courier New',monospace; font-size:0.83rem;
+  margin:12px 0; overflow-x:auto; line-height:1.7; white-space:pre-wrap;
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+}
+.prompt-box .comment { color:#6c7086; font-style:italic; }
+
+.step-tip {
+  background: rgba(56,189,248,0.10);
+  border-left:3px solid var(--accent2,#38bdf8);
+  padding:10px 15px; margin-top:12px; border-radius:0 8px 8px 0;
+  font-size:0.88rem; color:#bae6fd;
+}
+.step-tip strong { color:#7dd3fc; }
+
+.step-warn {
+  background: rgba(245,158,11,0.10);
+  border-left:3px solid #f59e0b;
+  padding:10px 15px; margin-top:12px; border-radius:0 8px 8px 0;
+  font-size:0.88rem; color:#fcd34d;
+}
+.step-warn strong { color:#fbbf24; }
+
+.skill-summary {
+  background: linear-gradient(135deg, rgba(129,140,248,0.20), rgba(56,189,248,0.18));
+  border:1px solid rgba(129,140,248,0.30);
+  border-radius:16px; padding:35px; color:#fff; margin-top:40px;
+}
+.skill-summary h3 { font-size:1.5rem; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+.skill-summary .skill-intro { opacity:0.92; margin-bottom:25px; font-size:0.95rem; color:#e2e8f5; }
+
+.skill-structure {
+  background: rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:12px; padding:25px; margin-bottom:25px;
+}
+.skill-structure h4 { font-size:1.1rem; margin-bottom:15px; color:#fff; }
+
+.skill-modules { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; }
+.skill-module { background: rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:12px 15px; font-size:0.88rem; color:#e2e8f5; }
+.skill-module strong { display:block; margin-bottom:4px; color:#fff; }
+
+.example-box {
+  background: rgba(255,255,255,0.06);
+  border:1px solid var(--card-border, rgba(255,255,255,0.12));
+  border-radius:12px; padding:25px; color:#e8ecf4;
+}
+.example-box h4 { color: var(--accent2,#38bdf8); margin-bottom:15px; display:flex; align-items:center; gap:8px; }
+.example-prompt {
+  background:#0b0e17; border:1px solid var(--card-border, rgba(255,255,255,0.12));
+  border-radius:8px; padding:15px; font-family:'Consolas','Monaco',monospace;
+  font-size:0.82rem; line-height:1.7; color:#cbd5e1; max-height:400px; overflow-y:auto;
+}
+
+.footer { text-align:center; color: var(--muted,#9aa6bf); margin-top:40px; font-size:0.9rem; }
+
+@media (max-width:768px) {
+  .header h1 { font-size:1.8rem; }
+  .section { padding:25px; }
+  .agent-compare { grid-template-columns:1fr; }
+  .steps-container { padding-left:30px; }
+  .step-number { left:-30px; width:32px; height:32px; font-size:0.9rem; }
+}
+</style>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏙️ 城市体检报告AI生成完全指南</h1>
+            <p>基于住建部2026年工作手册 · 豆包Agent零基础实战教学</p>
+            <div class="badge">📋 55项基础指标 · 四级维度体系 · 标准化报告输出</div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection(1)">📋 报告深度解析</button>
+            <button class="nav-tab" onclick="showSection(2)">🤖 AI工具与准备</button>
+            <button class="nav-tab" onclick="showSection(3)">🚀 零基础实战教学</button>
+            <button class="nav-tab" onclick="showSection(4)">💡 Skill固化范例</button>
+        </div>
+
+        <!-- 第一部分：报告深度解析 -->
+        <div class="section active" id="section1">
+            <h2 class="section-title">
+                <span class="icon">📋</span>
+                城市体检报告深度解析
+            </h2>
+            <p class="section-desc">基于住建部《2026年城市体检工作手册（试行）》标准体系</p>
+
+            <!-- 主卡片 -->
+            <div class="main-card">
+                <div class="main-card-header">
+                    <h3>城市体检报告</h3>
+                    <div class="subtitle">城市发展年度健康诊断 · 城市更新前置必备工作</div>
+                </div>
+                <div class="main-card-body" style="grid-template-columns: 1fr; gap: 20px;">
+                    <div class="card-section">
+                        <h4>📐 标准大纲结构</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.7;">
+                            严格遵循住建部工作手册附件四的9章标准框架。前两章交代背景与方法，中间四章是四个维度的核心诊断，
+                            第7章为主观民意验证，第8章为问题与对策的核心产出，最后第9章为系统性治理建议。
+                            总字数约3-4万字，四个维度章节占比约60%。
+                        </p>
+                        <ul>
+                            <li><strong>第1章 城市体检工作概述：</strong>总体要求、体检范围、工作机制、技术路线</li>
+                            <li><strong>第2章 体检指标体系构建：</strong>1+N+X体系说明、55项基础指标介绍、特色指标说明</li>
+                            <li><strong>第3章 住房维度指标分析诊断：</strong>安全耐久、功能完备、绿色智能三类8项指标分析</li>
+                            <li><strong>第4章 小区(社区)维度分析：</strong>设施完善、环境宜居、管理健全三类10项指标分析</li>
+                            <li><strong>第5章 街区维度分析诊断：</strong>功能完善、整洁有序、特色活力三类8项指标分析</li>
+                            <li><strong>第6章 城区(城市)维度分析：</strong>五大方向27项指标综合评价</li>
+                            <li><strong>第7章 居民抽样问卷调查分析：</strong>满意度评价、突出问题、主客观对比</li>
+                            <li><strong>第8章 问题清单与整治建议清单：</strong>分级分类问题汇总、对应整治措施</li>
+                            <li><strong>第9章 治理对策与行动建议：</strong>系统性治理策略、年度行动建议、长效机制</li>
+                        </ul>
+                    </div>
+                    <div class="card-section">
+                        <h4>📚 基础资料准备</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.7;">
+                            资料齐备是AI生成高质量报告的前提。核心是55项指标的原始数据和上年度整改情况，
+                            规划和政策文件作为背景支撑，调查数据用于主客观交叉验证。建议按类别分文件夹整理，
+                            便于AI自动识别和读取。
+                        </p>
+                        <ul>
+                            <li><strong>上年度体检资料：</strong>上年报告、问题清单、整改完成情况（计算问题整治率必备）</li>
+                            <li><strong>指标原始数据：</strong>住建部55项基础指标各部门报送数据，是报告的核心数据源</li>
+                            <li><strong>规划依据文件：</strong>国土空间总体规划、各相关专项规划，作为达标判定参照</li>
+                            <li><strong>居民调查数据：</strong>居民满意度问卷原始数据，样本量不低于800份</li>
+                            <li><strong>专项普查成果：</strong>第一次自然灾害风险普查、城市危旧房摸底调查等专项数据</li>
+                            <li><strong>统计年鉴年报：</strong>各部门官方统计数据，用于交叉验证和补充说明</li>
+                            <li><strong>政策标准文件：</strong>国家及省市工作通知、技术标准、相关政策要求</li>
+                        </ul>
+                    </div>
+                    <div class="card-section">
+                        <h4>✍️ 写作核心重点</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.7;">
+                            城市体检报告不是简单的数据罗列，而是诊断分析报告。核心要求是"用数据说话、用问题导向、
+                            用对策落地"，每一项指标都要完成"数据呈现→达标判定→问题诊断"的完整闭环，
+                            不能只列数字不分析，也不能只说问题不给对策。
+                        </p>
+                        <ul>
+                            <li><strong>指标计算准确可追溯：</strong>每项数据标注来源和计算方法，确保可核查、可复现</li>
+                            <li><strong>达标判定分级清晰：</strong>区分底线型（安全红线，一票否决）和提升型（品质优化）</li>
+                            <li><strong>问题诊断有数据支撑：</strong>每个问题必须对应具体指标数值，不能凭感觉定性</li>
+                            <li><strong>对策建议对应可落地：</strong>整治建议与问题一一对应，明确实施路径和责任方向</li>
+                            <li><strong>纵横对比体现变化：</strong>与上年度对比看整改成效，与同类城市对比看发展水平</li>
+                            <li><strong>主客观交叉验证：</strong>客观指标数据与居民主观满意度相互印证，发现隐性问题</li>
+                            <li><strong>问题分级分类管理：</strong>按严重程度、责任主体分类，便于后续整改落实</li>
+                        </ul>
+                    </div>
+                    <div class="card-section">
+                        <h4>🖼️ 配图与图纸要求</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.7;">
+                            城市体检是空间性很强的工作，图纸是重要组成部分。GIS空间分布图体现问题的空间分布特征，
+                            统计图表展示量化对比关系。AI负责生成数据和文字分析，空间图纸需GIS软件配合出图，
+                            但AI可以给出图纸清单和制图要求。
+                        </p>
+                        <ul>
+                            <li><strong>基础底图类：</strong>城市区位图、行政区划图、建成区范围图、体检单元划分图</li>
+                            <li><strong>空间分布类：</strong>各指标空间分布图（GIS出图）、问题点位分布"问题地图"</li>
+                            <li><strong>统计图表类：</strong>各维度达标率柱状图、年度变化折线图、满意度雷达图等</li>
+                            <li><strong>调查分析类：</strong>居民满意度分项统计图、不同人群诉求差异对比图</li>
+                            <li><strong>项目布局类：</strong>整治建议项目分布示意图、城市更新项目库点位图</li>
+                            <li><strong>典型案例类：</strong>重点问题现场照片、整改前后对比图（有条件时配备）</li>
+                            <li><strong>制图规范：</strong>统一图例、比例尺、指北针，图号图题格式规范</li>
+                        </ul>
+                    </div>
+                    <div class="card-section">
+                        <h4>🎯 最终成果交付</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.7;">
+                            完整的城市体检成果由"文本+图纸+附件"三部分组成。文本是主体报告，图纸是空间表达，
+                            附件是支撑数据和标准化清单。其中问题清单和整治建议清单是核心交付物，
+                            直接对接城市更新项目库，是"先体检后更新"的关键衔接点。
+                        </p>
+                        <ul>
+                            <li><strong>文本部分：</strong>城市体检总报告正文（9章，约3-4万字）</li>
+                            <li><strong>图纸部分：</strong>相关指标图集（GIS出图，按章节顺序编排）</li>
+                            <li><strong>附件1 指标数据表：</strong>55项基础指标完整数据表，含数值、单位、来源</li>
+                            <li><strong>附件2 问题台账：</strong>住房、小区、街区三个维度分维度问题明细台账</li>
+                            <li><strong>附件3 问题清单：</strong>汇总版问题清单，分级分类（底线型/提升型）</li>
+                            <li><strong>附件4 整治建议清单：</strong>对应问题的整治措施，分限时解决/持续推进</li>
+                            <li><strong>附件5 更新项目库：</strong>基于体检结果生成的城市更新建议项目清单</li>
+                        </ul>
+                    </div>
+                    <div class="card-section">
+                        <h4>⭐ 评审关键要点</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.7;">
+                            评审重点关注"全、准、实"三个字。全覆盖——55项指标不能缺项；数据准——来源权威、计算规范；
+                            对策实——问题找得准、建议可落地。同时要体现年度对比和整改闭环，
+                            验证"体检-整改-再体检"的工作机制是否有效运转。
+                        </p>
+                        <ul>
+                            <li><strong>指标体系完整性：</strong>55项基础指标是否全覆盖，特色指标设置是否合理</li>
+                            <li><strong>数据来源权威性：</strong>数据是否来自官方渠道，计算方法是否规范统一</li>
+                            <li><strong>问题查找精准度：</strong>是否找准真问题，有无遗漏重大安全隐患</li>
+                            <li><strong>整治建议可行性：</strong>对策是否可操作，责任主体是否明确，时序安排是否合理</li>
+                            <li><strong>整改成效体现：</strong>与上年度对比，问题整改率如何，有无体现持续改进</li>
+                            <li><strong>问卷样本合规性：</strong>样本量是否达标（≥800份），抽样分布是否科学</li>
+                            <li><strong>更新衔接到位度：</strong>"先体检后更新"是否落地，项目库与问题清单是否对应</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 指标体系 -->
+            <h3 class="subsection-title">📊 "1+N+X"四级指标体系（55项基础指标）</h3>
+            <p style="font-size: 0.92rem; margin-bottom: 15px;">
+                住建部2026年统一基础指标共<strong>55项</strong>，各地可在此基础上增加地方特色指标（X），实际执行通常为60项左右。
+                其中"1"为四个维度层级，"N"为基础指标，"X"为地方特色体检内容。
+            </p>
+
+            <table class="indicator-table">
+                <thead>
+                    <tr>
+                        <th>维度层级</th>
+                        <th>分类方向</th>
+                        <th>指标数量</th>
+                        <th>核心指标举例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="dim-col" rowspan="3">🏠 住房维度</td>
+                        <td>安全耐久</td>
+                        <td class="num-col">4</td>
+                        <td>结构安全隐患、燃气安全隐患、楼道安全隐患、围护安全隐患</td>
+                    </tr>
+                    <tr>
+                        <td>功能完备</td>
+                        <td class="num-col">2</td>
+                        <td>管线管道破损、适老化改造需求</td>
+                    </tr>
+                    <tr>
+                        <td>绿色智能</td>
+                        <td class="num-col">2</td>
+                        <td>节能改造需求、数字化改造需求</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-col" rowspan="3">🏘️ 小区(社区)</td>
+                        <td>设施完善</td>
+                        <td class="num-col">5</td>
+                        <td>养老服务、托育设施、停车缺口、充电桩、电动自行车充电</td>
+                    </tr>
+                    <tr>
+                        <td>环境宜居</td>
+                        <td class="num-col">3</td>
+                        <td>公共活动场地、步行道、生活垃圾分类</td>
+                    </tr>
+                    <tr>
+                        <td>管理健全</td>
+                        <td class="num-col">2</td>
+                        <td>物业管理、智慧化改造</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-col" rowspan="3">🏙️ 街区维度</td>
+                        <td>功能完善</td>
+                        <td class="num-col">4</td>
+                        <td>中学覆盖率、运动场地、文化活动中心、公园绿化覆盖率</td>
+                    </tr>
+                    <tr>
+                        <td>整洁有序</td>
+                        <td class="num-col">1</td>
+                        <td>车辆乱停乱放问题道路</td>
+                    </tr>
+                    <tr>
+                        <td>特色活力</td>
+                        <td class="num-col">3</td>
+                        <td>老旧商业街区、老旧厂区、老旧生活街区更新需求</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-col" rowspan="5">🌆 城区(城市)</td>
+                        <td>生态宜居</td>
+                        <td class="num-col">5</td>
+                        <td>绿道覆盖率、体育场地、文化设施、道路网密度、绿色建筑占比</td>
+                    </tr>
+                    <tr>
+                        <td>历史文化保护</td>
+                        <td class="num-col">5</td>
+                        <td>挂牌建档率、历史建筑空置率、破坏事件数、擅自拆除数、保护对象新增</td>
+                    </tr>
+                    <tr>
+                        <td>产城融合职住平衡</td>
+                        <td class="num-col">5</td>
+                        <td>高峰期车速、轨道通勤覆盖、公租房轮候、城中村改造、危旧房改造</td>
+                    </tr>
+                    <tr>
+                        <td>安全韧性</td>
+                        <td class="num-col">9</td>
+                        <td>安全事故死亡率、防涝能力、应急水源、平急两用、危旧桥梁、燃气管网、消防站、避难场所、生命线监测</td>
+                    </tr>
+                    <tr>
+                        <td>智慧高效</td>
+                        <td class="num-col">3</td>
+                        <td>施工安全监测、火灾智能预警、运管服平台水平</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-col">🔄 问题整治</td>
+                        <td>整改成效</td>
+                        <td class="num-col">2</td>
+                        <td>问题整改率、城市更新入库项目数</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2">合计基础指标</td>
+                        <td class="num-col">55</td>
+                        <td>住房8 + 小区10 + 街区8 + 城区27 + 整治2 = 55项</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="step-tip">
+                💡 <strong>说明：</strong>以上为住建部统一的55项基础指标。各省、各市可结合地方实际增加特色指标，
+                如湖南省增加了供水、污水、燃气等专项指标，实际体检指标总数通常在60项左右。
+                本教学以55项基础指标为核心框架。
+            </div>
+        </div>
+
+        <!-- 第二部分：AI工具与准备工作 -->
+        <div class="section" id="section2">
+            <h2 class="section-title">
+                <span class="icon">🤖</span>
+                AI工具介绍与前期准备
+            </h2>
+            <p class="section-desc">了解可用工具特性，掌握资料准备标准，零基础也能上手</p>
+
+            <h3 class="subsection-title">🔧 两款主流AI Agent对比</h3>
+
+            <div class="agent-compare">
+                <div class="agent-card recommended">
+                    <div class="agent-name">
+                        豆包 Agent
+                        <span class="agent-badge">首选推荐</span>
+                    </div>
+                    <p class="agent-desc">字节跳动出品，中文规划领域适配最佳，零基础最易上手</p>
+                    <ul class="agent-features">
+                        <li>支持本地文件夹直接读取，自动遍历所有文件</li>
+                        <li>OrganizeAgent智能编排，自动拆解复杂任务</li>
+                        <li>飞书生态打通，一键生成在线文档/表格</li>
+                        <li>Skill机制，可固化工作流反复复用</li>
+                        <li>多模态能力，支持PDF/图片/表格解析</li>
+                        <li>中文专业术语理解准确，官方语体适配好</li>
+                        <li>图形化界面，无需编程基础即可使用</li>
+                    </ul>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-name">WorkBuddy</div>
+                    <p class="agent-desc">桌面协作智能体，深度集成本地环境，适合数据处理</p>
+                    <ul class="agent-features">
+                        <li>本地文件系统深度集成，读写速度快</li>
+                        <li>支持命令行工具调用，可运行Python脚本</li>
+                        <li>浏览器自动化操作，可抓取网页数据</li>
+                        <li>可调度本地Excel进行复杂数据计算</li>
+                        <li>适合需要大量本地计算的数据处理场景</li>
+                        <li>适合有一定技术基础的使用者</li>
+                        <li>可与本地GIS、统计软件联动</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 两款工具共性优势 -->
+            <h3 class="subsection-title">✨ AI Agent做城市体检的共同优势</h3>
+
+            <div class="advantage-box">
+                <h3>🚀 相比传统人工编制的7大提升</h3>
+                <div class="advantage-grid">
+                    <div class="advantage-item">
+                        <h4>⏱️ 效率提升3-5倍</h4>
+                        <p>传统人工编制需20-30人天，AI辅助仅需5-8人天，数据整理和初稿撰写效率大幅提升</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>📊 数据处理零差错</h4>
+                        <p>55项指标批量计算、分类统计、交叉对比，AI处理准确率100%，避免人工计算错误</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>📝 格式高度规范</h4>
+                        <p>严格按照官方提纲输出，术语统一，语体规范，避免不同编写人员风格不一致问题</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>🔍 问题查找更系统</h4>
+                        <p>四个维度全覆盖，逐项指标分析诊断，不会遗漏，问题分类分级更标准</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>📋 附件自动生成</h4>
+                        <p>问题台账、问题清单、整治建议清单等标准化表格，AI可一键生成规范格式</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>🔄 经验可复用</h4>
+                        <p>固化为Skill后，下一年度或其他城市项目可直接调用，质量稳定输出</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>👥 降低人力门槛</h4>
+                        <p>新人配合AI即可完成基础报告编制，资深专家专注审核和策略提升，团队产能倍增</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 使用前提 -->
+            <div class="prerequisite-box">
+                <h4>⚠️ 使用AI生成报告的5个前提条件（必须满足）</h4>
+                <ul>
+                    <li><strong>基础数据齐备：</strong>55项指标的原始数据必须齐全，AI不能凭空编造数据，只能处理已有数据</li>
+                    <li><strong>项目信息明确：</strong>城市名称、体检范围、年度、重点要求等基础信息清晰，不能模糊</li>
+                    <li><strong>大纲框架确认：</strong>报告章节结构需先确认，AI按框架填充，不负责整体架构决策</li>
+                    <li><strong>专业人员终审：</strong>AI生成初稿后必须由规划专业人员审核修正，确保技术和政策正确性</li>
+                    <li><strong>参考范文可选：</strong>如有同类优秀报告作为风格参考，输出质量和语体匹配度会显著提升</li>
+                </ul>
+            </div>
+
+            <!-- 资料清单 -->
+            <h3 class="subsection-title">📁 城市体检资料准备清单</h3>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>资料类别</th>
+                        <th>基础必备资料（缺一不可）</th>
+                        <th>辅助提升资料（有则更好）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="category">规划依据</td>
+                        <td>国土空间总体规划、上年度城市体检报告</td>
+                        <td>各专项规划、区域发展战略、十五五规划相关内容</td>
+                    </tr>
+                    <tr>
+                        <td class="category">指标数据</td>
+                        <td>住建部55项基础指标各部门报送数据、城市统计年鉴</td>
+                        <td>近3年历史数据、同类对标城市数据、各部门专项统计数据</td>
+                    </tr>
+                    <tr>
+                        <td class="category">调查数据</td>
+                        <td>居民满意度调查问卷结果（≥800份）、住房/小区现场普查表</td>
+                        <td>现场踏勘照片、典型问题案例素材、12345热线数据</td>
+                    </tr>
+                    <tr>
+                        <td class="category">政策文件</td>
+                        <td>国家体检工作通知、省工作要求、工作手册</td>
+                        <td>地方配套政策、其他城市先进经验、相关技术标准规范</td>
+                    </tr>
+                    <tr>
+                        <td class="category">空间数据</td>
+                        <td>建成区范围、行政区划、街道社区边界</td>
+                        <td>GIS图层数据、POI兴趣点、遥感影像数据</td>
+                    </tr>
+                    <tr>
+                        <td class="category">整改数据</td>
+                        <td>上年度问题清单整改情况、已入库城市更新项目清单</td>
+                        <td>整改前后对比数据、项目实施进度、典型整改案例</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="step-warn">
+                ⚠️ <strong>特别提醒：</strong>所有数据文件建议按"规划类/数据类/调查类/政策类"分文件夹整理好，
+                整个项目文件夹一次性共享给Agent，效果最好。零散发送文件会降低AI的理解效率。
+            </div>
+        </div>
+
+        <!-- 第三部分：零基础实战教学 -->
+        <div class="section" id="section3">
+            <h2 class="section-title">
+                <span class="icon">🚀</span>
+                零基础实战：8步生成城市体检报告
+            </h2>
+            <p class="section-desc">面向完全没用过豆包Agent的新手，每一步都有详细操作说明</p>
+
+            <div class="prerequisite-box">
+                <h4>📌 开始前的准备工作</h4>
+                <ul>
+                    <li>在电脑上建立项目文件夹，命名如"XX市2026年城市体检"</li>
+                    <li>按标准目录结构建立子文件夹，分类放入各类资料文件</li>
+                    <li>根目录放一个项目说明.txt，写明：城市名称、年度、体检范围、特殊要求</li>
+                    <li>打开豆包桌面版，登录账号，进入办公任务功能</li>
+                </ul>
+            </div>
+
+            <div class="steps-container">
+                <!-- 步骤1 -->
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">创建项目：建立本地文件夹并关联豆包</h3>
+                    <div class="step-content">
+                        <h5>操作步骤：</h5>
+                        <ol>
+                            <li>在电脑上建立项目文件夹，命名如"XX市2026年城市体检"</li>
+                            <li>按以下目录结构放入各类资料文件：
+                                <ul style="margin-top: 5px;">
+                                    <li>01_规划依据/（总规、专项规划等）</li>
+                                    <li>02_指标数据/（各部门数据、统计年鉴等）</li>
+                                    <li>03_调查数据/（居民问卷、现场普查表等）</li>
+                                    <li>04_政策文件/（工作通知、工作手册等）</li>
+                                    <li>05_上年度资料/（上年报告、整改情况等）</li>
+                                    <li>项目说明.txt（写明城市、年度、范围、特殊要求）</li>
+                                </ul>
+                            </li>
+                            <li>打开豆包桌面版，进入"办公任务"功能</li>
+                            <li>选择"本地电脑文件夹项目"，关联刚才建立的项目文件夹</li>
+                            <li>豆包自动读取文件夹内所有文件，建立项目认知</li>
+                            <li>在对话框中粘贴下方启动提示词，确认项目启动</li>
+                        </ol>
+
+                        <h5>💬 启动提示词（直接复制粘贴）：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第1步：项目启动提示词</span>
+这是一个城市体检报告编制项目，项目文件夹已关联，请先全面读取文件夹中的所有文件，建立对项目的整体认知。
+
+【项目基本信息】
+- 项目名称：XX市2026年城市体检报告
+- 编制依据：住建部2026年城市体检工作手册
+- 体检范围：XX市建成区
+- 报告要求：官方正式语体，约3-4万字，55项基础指标全覆盖
+
+请完成以下工作：
+1. 梳理现有资料清单，按子文件夹分类列出你读取到的文件
+2. 对照住建部55项基础指标，指出还缺少哪些关键数据
+3. 说明你对这个项目的理解和后续工作思路
+
+不用写正文，先做资料盘点和项目理解就好。
+                        </div>
+
+                        <div class="step-tip">
+                            💡 <strong>新手提示：</strong>这一步叫"项目初始化"，就像给新人培训一样，让AI先把所有资料看完，
+                            建立项目认知。不要一上来就让它写报告，那样质量会很差。等它回复后，你再确认理解是否正确，有偏差及时纠正。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤2 -->
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">数据整理：55项指标结构化汇总</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>让AI把分散在各个文件中的指标数据整理成一张统一的指标统计表，计算各项达标情况。</p>
+
+                        <h5>操作说明：</h5>
+                        <p>确认AI对项目理解正确后，发送以下提示词，让它开始数据整理工作。</p>
+
+                        <h5>💬 指标整理提示词：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第2步：指标数据整理提示词</span>
+请基于文件夹中的各项数据，按照住建部2026年城市体检55项基础指标体系，整理生成完整的指标统计表。
+
+要求：
+1. 严格按照四个维度（住房、小区、街区、城区）+ 问题整治的顺序排列
+2. 每项指标包含：指标名称、指标值、单位、数据来源、达标判定（达标/未达标/不适用）
+3. 住房和小区维度按栋数/个数统计，城区维度按百分比/人均值统计
+4. 达标判定参考工作手册中的标准，没有明确标准的标注"参考值"
+5. 最后增加一行汇总：达标XX项，未达标XX项，不适用XX项
+6. 输出为Markdown表格格式，方便后续复制使用
+
+注意：所有数据必须来自项目文件夹中的资料，没有数据的指标标注"待补充"，绝对不能编造数据。
+                        </div>
+
+                        <div class="step-tip">
+                            💡 <strong>新手提示：</strong>这一步产出的指标表是整个报告的核心数据基础。
+                            生成后你一定要逐项核对数据准确性，发现错误立刻让它修正。
+                            数据错了，后面的分析全都会错。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤3 -->
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">大纲构建：确认报告章节框架</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>按照工作手册附件四的标准提纲，结合本项目特点，生成详细的三级目录，确认后再开始写正文。</p>
+
+                        <h5>💬 大纲生成提示词：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第3步：大纲构建提示词</span>
+请根据住建部城市体检报告的标准提纲，结合XX市的实际情况，生成详细的报告大纲。
+
+标准章节框架：
+第1章 城市体检工作概述
+第2章 体检指标体系构建
+第3章 住房维度指标分析诊断
+第4章 小区(社区)维度分析诊断
+第5章 街区维度分析诊断
+第6章 城区(城市)维度分析诊断
+第7章 居民抽样问卷调查分析
+第8章 问题清单与整治建议清单
+第9章 治理对策与行动建议
+
+要求：
+1. 细化到三级目录，每章下面分节，每节下面分点
+2. 每个三级目录标注建议字数，总字数约3.5万字
+3. 第3-6章四个维度是重点，每章约4000-5000字
+4. 第8章问题和清单部分要详细，约5000字
+5. 标注哪些章节需要配图表
+6. 最后给出篇幅分配汇总表
+
+先输出完整目录树，我确认没问题了再开始写正文。
+                        </div>
+
+                        <div class="step-warn">
+                            ⚠️ <strong>重要：大纲一定要人工确认！</strong>这一步花10分钟，可以省后面10小时返工。
+                            检查章节是否完整、逻辑是否通顺、重点是否突出。
+                            确认没问题了再告诉AI"大纲确认，可以开始写正文"。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤4 -->
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">维度分析：四个维度逐章撰写</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>按大纲顺序，逐章撰写四个维度的分析诊断内容。不要一次性让AI写完整篇，分章节推进。</p>
+
+                        <h5>写作原则：</h5>
+                        <ul>
+                            <li>从第3章到第6章，按顺序一章一章写</li>
+                            <li>每次写1章，写完检查没问题再继续下一章</li>
+                            <li>每章结构：总体概况 → 分项指标分析 → 主要问题总结</li>
+                            <li>所有分析必须有数据支撑，不能空泛</li>
+                        </ul>
+
+                        <h5>💬 章节写作提示词（以住房维度为例）：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第4步：维度分析提示词（住房维度示例）</span>
+请撰写"第3章 住房维度指标分析诊断"，约4500字。
+
+【基础数据】
+（引用第2步整理好的住房维度8项指标数据）
+
+【写作结构】
+3.1 总体概况
+- 本市住房总体情况简述
+- 住房维度8项指标整体达标情况总结
+
+3.2 安全耐久类指标分析
+3.2.1 结构安全隐患分析
+- 数据情况、问题分布、严重程度
+3.2.2 燃气安全隐患分析
+- 隐患数量、主要问题类型、风险评估
+3.2.3 楼道安全隐患分析
+- 各类问题统计、突出问题分析
+3.2.4 围护安全隐患分析
+- 外墙、门窗、屋面等问题分类
+
+3.3 功能完备类指标分析
+3.3.1 管线管道破损情况
+3.3.2 适老化改造需求分析
+
+3.4 绿色智能类指标分析
+3.4.1 节能改造潜力分析
+3.4.2 数字化改造需求分析
+
+3.5 住房维度主要问题总结
+- 提炼3-4个最突出的核心问题
+- 分析问题成因
+
+【要求】
+- 每个指标都要有数据、有分析、有结论
+- 不仅说"有多少问题"，还要分析"意味着什么"
+- 语言正式，符合政府报告语体
+- 涉及数据的地方标注清楚数值
+                        </div>
+
+                        <div class="step-tip">
+                            💡 <strong>新手提示：</strong>其他三个维度（小区、街区、城区）的写法一样，
+                            把提示词中的维度名称和指标项替换一下就行。
+                            发现某段写得不好，直接说"3.2节写得太浅，请加深分析"让它重写。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤5 -->
+                <div class="step-item">
+                    <div class="step-number">5</div>
+                    <h3 class="step-title">问卷分析：居民满意度调查解读</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>基于居民问卷调查数据，撰写第7章居民满意度分析，形成主客观交叉验证。</p>
+
+                        <h5>💬 问卷分析提示词：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第5步：居民问卷分析提示词</span>
+请基于居民问卷调查数据，撰写"第7章 居民抽样问卷调查分析"，约3000字。
+
+【基本情况】
+- 发放问卷：XXX份，有效问卷：XXX份
+- 样本分布：年龄、性别、职业、区域分布说明
+
+【写作结构】
+7.1 调查概况
+- 调查范围、样本量、抽样方法说明
+- 样本人口统计学特征分析
+
+7.2 各维度满意度评价
+7.2.1 住房维度满意度
+7.2.2 小区(社区)维度满意度
+7.2.3 街区维度满意度
+7.2.4 城市整体满意度
+
+7.3 群众反映最突出的问题
+- 按关注度排序TOP10问题
+- 不同人群的诉求差异分析
+
+7.4 主客观对比分析
+- 居民主观感受与客观指标的吻合度
+- 客观达标但居民感受不佳的指标分析
+
+7.5 小结
+- 整体满意度评价结论
+- 最需要优先解决的民生问题
+
+【要求】
+- 用数据说话，每个结论都要有问卷数据支撑
+- 分析要有深度，不仅列数据还要解读含义
+- 重点突出群众急难愁盼的问题
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤6 -->
+                <div class="step-item">
+                    <div class="step-number">6</div>
+                    <h3 class="step-title">清单生成：问题清单+整治建议</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>汇总所有维度的问题，生成标准化的问题清单和整治建议清单，这是报告的核心产出。</p>
+
+                        <h5>💬 清单生成提示词：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第6步：问题与整治清单生成提示词</span>
+请基于前面四个维度的分析结论，整理生成"第8章 问题清单与整治建议清单"，并输出两张标准化表格。
+
+【8.1 问题清单】
+按以下分类整理：
+- 底线型问题（安全类，一票否决）：结构安全、燃气安全、消防安全等
+- 提升型问题（品质类，持续改进）：设施配套、环境品质、管理服务等
+
+每个问题包含：
+- 序号、所属维度、问题描述、涉及范围、严重程度（高/中/低）
+
+【8.2 整治建议清单】
+按"限时解决"和"持续推进"两类划分：
+- 限时解决：安全隐患、群众反映强烈的问题，1年内完成
+- 持续推进：需长期投入的短板问题，3-5年逐步解决
+
+每条建议包含：
+- 序号、对应问题、整治建议内容、责任单位建议、整治类型（限时/持续）、涉及区域
+
+【要求】
+1. 问题要与前面的分析一一对应，不能出现前面没提过的问题
+2. 整治建议要具体可操作，不能空泛
+3. 责任单位要合理，对应到具体部门
+4. 两张表格都用标准格式输出，方便直接放入附件
+5. 最后做一个汇总统计：问题总数、限时解决XX项、持续推进XX项
+                        </div>
+
+                        <div class="step-warn">
+                            ⚠️ <strong>重点审核章节：</strong>问题清单和整治建议是城市体检最重要的成果，
+                            直接关系到后续城市更新项目库的生成。这一章必须由专业人员仔细审核，
+                            确保问题不遗漏、建议可落地、责任不推诿。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤7 -->
+                <div class="step-item">
+                    <div class="step-number">7</div>
+                    <h3 class="step-title">全文统稿：首尾章节+质检优化</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>撰写第1章、第2章、第9章首尾章节，然后对全文做统一润色和质量检查。</p>
+
+                        <h5>7.1 撰写首尾章节</h5>
+                        <p>第1章概述、第2章指标体系、第9章对策建议，这三章放在最后写，因为需要基于全文内容来总结。</p>
+
+                        <h5>7.2 全文统稿质检</h5>
+                        <h5>💬 统稿提示词：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第7步：全文统稿提示词</span>
+请对已完成的报告全文做统稿优化，重点检查以下内容：
+
+1. 【术语统一】检查全文专业术语，统一表述方式，同一概念不能有多种说法
+2. 【数据核对】检查前后出现的同一指标数据是否一致，不能前后矛盾
+3. 【编号修正】检查章节编号、图表编号是否连续正确
+4. 【风格统一】全文语言风格统一为正式的政府工作报告语体
+5. 【逻辑衔接】优化各章节之间、段落之间的过渡，让全文更连贯
+6. 【问题对应】检查问题清单的问题与前面分析的问题是否一一对应
+7. 【篇幅调整】整体控制在3.5万字左右
+
+只做形式和逻辑的优化，不改变核心数据和结论。
+输出修改说明和优化后的全文。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤8 -->
+                <div class="step-item">
+                    <div class="step-number">8</div>
+                    <h3 class="step-title">成果交付：Word文档+全套附件</h3>
+                    <div class="step-content">
+                        <h5>任务目标：</h5>
+                        <p>生成完整的Word版报告正文 + 全套附件表格，在AI画布中可直接编辑调整。</p>
+
+                        <h5>Word文档格式要求：</h5>
+                        <ul>
+                            <li><strong>页面设置：</strong>A4纸，上下边距2.54cm，左右2.5cm</li>
+                            <li><strong>字体：</strong>正文宋体小四，标题黑体，一级标题二号，二级标题三号，三级标题四号</li>
+                            <li><strong>段落：</strong>首行缩进2字符，行间距1.5倍</li>
+                            <li><strong>页码：</strong>底部居中，正文从第1页开始编号</li>
+                            <li><strong>目录：</strong>自动生成三级目录，放在报告最前面</li>
+                            <li><strong>图表：</strong>图题在图下方，表题在表上方，统一编号（如图1-1、表3-2）</li>
+                            <li><strong>附件：</strong>7个附件表格放在正文最后，每个附件单独分页</li>
+                        </ul>
+
+                        <h5>需要生成的附件清单：</h5>
+                        <ul>
+                            <li>附件1：城市体检基础指标数据表（55项）</li>
+                            <li>附件2：住房维度问题台账</li>
+                            <li>附件3：小区(社区)维度问题台账</li>
+                            <li>附件4：街区维度问题台账</li>
+                            <li>附件5：城市体检问题清单（汇总版）</li>
+                            <li>附件6：整治建议清单（汇总版）</li>
+                            <li>附件7：城市更新建议项目库</li>
+                        </ul>
+
+                        <h5>💬 最终交付提示词：</h5>
+                        <div class="prompt-box">
+<span class="comment"># 第8步：Word文档生成提示词</span>
+请将完成的报告全文整理输出为标准Word文档格式。
+
+【格式要求】
+- 标题层级：一级标题（第X章）、二级标题（X.X）、三级标题（X.X.X）
+- 正文宋体小四，1.5倍行距，首行缩进2字符
+- 表格统一三线表格式，表题在表格上方
+- 所有数据表格列宽自适应，内容居中对齐
+- 7个附件放在正文最后，每个附件前加分页符
+
+【内容结构】
+封面（报告名称+城市+年度）
+目录（自动生成三级目录）
+第1章 城市体检工作概述
+第2章 体检指标体系构建
+第3章 住房维度指标分析诊断
+第4章 小区(社区)维度分析诊断
+第5章 街区维度分析诊断
+第6章 城区(城市)维度分析诊断
+第7章 居民抽样问卷调查分析
+第8章 问题清单与整治建议清单
+第9章 治理对策与行动建议
+附件1-7（7个标准表格）
+
+生成后在AI画布中打开，方便我直接编辑调整。
+                        </div>
+
+                        <div class="step-tip">
+                            💡 <strong>交付说明：</strong>豆包生成的Word文档会在AI画布中打开，可以直接在线编辑修改，
+                            修改完成后导出为.docx文件即可。附件表格也会自动插入到文档末尾，
+                            如果需要单独的Excel表格，可以让AI把7个附件另外输出为CSV格式。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第四部分：Skill固化范例 -->
+        <div class="section" id="section4">
+            <h2 class="section-title">
+                <span class="icon">💡</span>
+                Skill固化：打造你的专属城市体检专家
+            </h2>
+            <p class="section-desc">做完一个项目后，把所有经验提炼成一条完整指令，下次直接调用</p>
+
+            <div class="skill-summary">
+                <h3>❓ 什么是Skill？为什么要做Skill固化？</h3>
+                <p class="skill-intro">
+                    Skill就是把一整套工作方法、写作要求、质量标准浓缩成一条完整的启动指令。
+                    做完第一个城市体检项目后，你会积累很多经验：哪些地方AI容易写错、什么格式最规范、
+                    哪些提示词效果最好。把这些经验全部整理进一条指令里，下次做新项目时，
+                    只要把这条指令发给豆包，AI就直接按照你的标准流程来做，中间8步的提示词都不用再写了。
+                </p>
+
+                <div class="skill-structure">
+                    <h4>🔧 Skill是怎么生成的？（三步提炼法）</h4>
+                    <div class="skill-modules">
+                        <div class="skill-module">
+                            <strong>第一步：项目做完后复盘</strong>
+                            回顾整个项目，把踩过的坑、调整过的要求、效果好的写法都总结出来
+                        </div>
+                        <div class="skill-module">
+                            <strong>第二步：AI自动整理提炼</strong>
+                            告诉AI"把本项目的全部工作方法整理成标准Skill"，AI自动分类归纳
+                        </div>
+                        <div class="skill-module">
+                            <strong>第三步：生成Skill.md文件</strong>
+                            AI输出完整的skill.md文件保存到项目文件夹，下次项目直接调用
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-structure">
+                    <h4>📦 一个完整Skill的6大构成模块</h4>
+                    <div class="skill-modules">
+                        <div class="skill-module">
+                            <strong>1. 角色身份设定</strong>
+                            告诉AI它是谁、擅长什么、专业背景是什么，建立人设
+                        </div>
+                        <div class="skill-module">
+                            <strong>2. 核心工作原则</strong>
+                            红线要求：数据不能编、标准不能改、问题不能漏、责任要明确
+                        </div>
+                        <div class="skill-module">
+                            <strong>3. 标准工作流程</strong>
+                            从资料盘点到最终交付的完整步骤，每步做什么、产出什么
+                        </div>
+                        <div class="skill-module">
+                            <strong>4. 写作规范要求</strong>
+                            语体风格、章节结构、数据表述、问题分级等具体写作标准
+                        </div>
+                        <div class="skill-module">
+                            <strong>5. 输出格式标准</strong>
+                            标题层级、表格格式、Word排版、附件清单等交付规范
+                        </div>
+                        <div class="skill-module">
+                            <strong>6. 质量检查节点</strong>
+                            哪些环节需要人工确认，避免跑偏，把控整体质量
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 完整Skill启动指令示范（做完第一个项目后可直接套用）</h4>
+                    <div class="example-prompt">
+【角色身份】
+你是一位资深城市规划工程师，专门负责城市体检报告编制工作，精通住建部《2026年城市体检工作手册》全部要求。
+写作风格：正式、严谨、数据驱动、符合政府公文规范，不用空话套话。
+
+【核心工作原则】
+1. 数据真实原则：所有指标数据必须来自项目文件夹中的资料，严禁编造数据，缺失的标注"待补充"
+2. 标准统一原则：严格按照55项基础指标体系工作，不随意增减指标
+3. 问题导向原则：每个分析结论必须对应具体问题，每个问题必须有数据支撑
+4. 分级分类原则：问题分底线型/提升型两类，整治分限时解决/持续推进两类
+5. 人工确认原则：数据整理、大纲构建、问题清单三个节点，必须等用户确认后再继续
+
+【标准工作流程】
+第一步：资料盘点 → 读取文件夹全部资料，输出分类清单和数据缺漏清单
+第二步：指标整理 → 生成55项指标统计表，含数值、单位、来源、达标判定
+第三步：大纲构建 → 按9章标准框架生成三级目录和各章节篇幅分配
+第四步：分章撰写 → 按住房→小区→街区→城区→问卷→对策的顺序逐章撰写
+第五步：清单生成 → 汇总问题清单和整治建议清单，按分级分类标准整理
+第六步：统稿质检 → 全文术语统一、数据前后核对、逻辑衔接、格式规范
+第七步：成果交付 → 生成Word正文 + 7个标准附件表格
+
+【写作规范要求】
+- 每章结构：总体概况 → 分项分析 → 问题总结，三段式
+- 每个指标都要有"数据+分析+结论"三要素，不能只列数字
+- 问题诊断要挖到原因层面，不能只描述现象
+- 整治建议要具体可落地，明确责任单位方向，不能空泛
+- 全文语体统一为正式的政府工作报告风格
+
+【输出格式标准】
+- 标题层级：第X章（一级）、X.X（二级）、X.X.X（三级）
+- 正文：宋体小四，1.5倍行距，首行缩进2字符
+- 表格：三线表格式，表题在上方，统一编号（表3-1、表5-2...）
+- Word交付：封面+目录+9章正文+7个附件，附件前分页
+- 关键节点完成后主动询问："以上是否确认？确认后继续下一步"
+
+【使用说明】
+收到这条指令后，等待用户关联项目文件夹并说明基本信息，然后按上述流程自动推进。
+每完成一个关键节点暂停，等待用户确认后再进入下一步。
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <p style="font-size: 1rem; line-height: 1.8; margin-bottom: 12px;">
+                        <strong>💡 Skill生成与调用方法：</strong>
+                    </p>
+                    <ol style="font-size: 0.95rem; line-height: 2; padding-left: 22px;">
+                        <li><strong>项目收尾时生成：</strong>做完第一个城市体检项目后，告诉AI"把本次项目的全部工作方法、写作要求、质量标准整理成一个完整的Skill，输出为skill.md格式文件保存到项目文件夹"</li>
+                        <li><strong>形成标准Skill文件：</strong>AI会自动生成 <code>城市体检报告编制Skill.md</code>，包含角色设定、工作原则、流程步骤、输出规范等全部内容</li>
+                        <li><strong>新项目直接调用：</strong>下次做新项目时，把这个Skill.md文件放入项目根目录，或者启动时直接指定调用该Skill文件</li>
+                        <li><strong>自动按流程推进：</strong>AI读取Skill后自动按照标准化流程执行，不用你再一步步想提示词，每到关键节点会自动暂停等你确认</li>
+                        <li><strong>持续迭代优化：</strong>每做完一个项目，让AI把新积累的经验补充更新到Skill文件里，版本号递增，越用越成熟</li>
+                    </ol>
+                    <p style="font-size: 0.9rem; margin-top: 12px; opacity: 0.9;">
+                        最终形成的Skill文件是团队可共享的标准化资产，新人拿到文件就能快速上手，
+                        保证不同项目、不同人员的输出质量稳定一致。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>城市体检报告AI生成完全指南 | 基于住建部2026年工作手册 | 豆包Agent实战教学</p>
+        </div>
+    </div>
+
+    <script>
+        function showSection(num) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('section' + num).classList.add('active');
+            document.querySelectorAll('.nav-tab')[num - 1].classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+    
+    
