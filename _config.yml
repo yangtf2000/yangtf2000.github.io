@@ -10,8 +10,3 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
-
-# Giscus 评论+点赞（需您在建仓后回填下方 id，见部署清单）
-giscus_repo: "yangtf2000/yangtf2000.github.io"
-giscus_repo_id: "R_kgDOT7-VdQ"
-giscus_category_id: "DIC_kwDOT7-Vdc4DDniR"
