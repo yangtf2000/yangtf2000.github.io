@@ -1,32 +1,39 @@
 ---
 layout: default
-title: 工作札记
 ---
 <section class="blog-intro">
-  <h1>工作札记</h1>
-  <p>工作存档 · AI 札记 · 政策周报 —— 对外工作内容的博客式归档。最新在前。</p>
+  <h1>茶叶末</h1>
+  <p>都是些碎末，泡出来也有茶味。</p>
 </section>
 
-{% assign cats = "policy,ai,work" | split: "," %}
-{% for c in cats %}
-  {% assign items = site.posts | where: "category", c %}
-  {% if items.size > 0 %}
-    <hr class="divider" id="{{ c }}">
-    <p class="sec-label">
-      {% if c == "policy" %}政策周报
-      {% elsif c == "ai" %}AI 札记
-      {% else %}工作存档{% endif %}
-    </p>
-    {% for post in items %}
-      <article class="entry">
-        <div class="entry-meta">
-          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
-          <span class="cat cat-{{ post.category }}">{{ post.category }}</span>
-        </div>
-        <h2 class="entry-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-        {% if post.excerpt %}<p class="entry-excerpt">{{ post.excerpt }}</p>{% endif %}
-        {% if post.tags %}<div class="entry-tags">{% for t in post.tags %}<span>#{{ t }}</span>{% endfor %}</div>{% endif %}
-      </article>
-    {% endfor %}
+{% assign pinned = site.posts | where: "featured", true %}
+
+<!-- 视图一：按时间倒序（置顶在最前） -->
+<div class="view" id="view-time">
+  {% if pinned.size > 0 %}
+  <section class="post-group pinned-group">
+    <h2 class="group-label">常查置顶<span class="group-count">{{ pinned.size }}</span></h2>
+    <hr class="group-divider">
+    <ul class="post-list">
+    {% for post in pinned %}{% include post-row.html post=post %}{% endfor %}
+    </ul>
+  </section>
   {% endif %}
-{% endfor %}
+
+  <ul class="post-list">
+  {% for post in site.posts %}{% if post.featured %}{% else %}{% include post-row.html post=post %}{% endif %}{% endfor %}
+  </ul>
+</div>
+
+<!-- 视图二：按分类（每个分类前一个标签头） -->
+<div class="view" id="view-category" style="display:none">
+  {% for cat in site.categories %}
+  <section class="post-group">
+    <h2 class="group-label">{{ cat[0] }}<span class="group-count">{{ cat[1].size }}</span></h2>
+    <hr class="group-divider">
+    <ul class="post-list">
+    {% for post in cat[1] %}{% include post-row.html post=post %}{% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</div>

@@ -1,6 +1,6 @@
 # ===== 工作站博客（根域名 yangtf2000.github.io）=====
-title: YTF · 工作札记
-description: 工作存档、AI 札记、政策周报 —— 对外工作内容归档。
+title: 茶叶末
+description: 都是些碎末，泡出来也有茶味。
 baseurl: ""                       # 根域名站，baseurl 留空
 url: "https://yangtf2000.github.io"
 markdown: kramdown

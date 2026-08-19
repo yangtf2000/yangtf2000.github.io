@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# 用户明确不要 SVG 图标，早期误产物，不进版本库
+assets/icons.svg

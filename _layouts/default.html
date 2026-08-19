@@ -5,17 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
   <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | truncate: 160 }}">
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/main.css">
 </head>
 <body>
   <header class="site-head">
-    <a class="brand" href="{{ site.baseurl }}/">{{ site.title }}</a>
-    <nav class="site-nav">
-      <a href="{{ site.baseurl }}/">目录</a>
-      <a href="{{ site.baseurl }}/#work">工作存档</a>
-      <a href="{{ site.baseurl }}/#ai">AI 札记</a>
-      <a href="{{ site.baseurl }}/#policy">政策周报</a>
-    </nav>
+    <div class="site-head-inner">
+      <div class="head-left">
+        <a class="brand" href="{{ site.baseurl }}/">{{ site.title }}</a>
+        <nav class="site-nav">
+          <a href="{{ site.baseurl }}/">首页</a>
+          <a href="{{ site.baseurl }}/#category">分类</a>
+        </nav>
+      </div>
+      <input type="search" class="site-search" id="site-search" placeholder="搜索…">
+    </div>
   </header>
   <main class="site-main">
     {{ content }}
@@ -23,5 +27,9 @@
   <footer class="site-foot">
     <span>© {{ site.time | date: '%Y' }} {{ site.title }} · 纯静态博客 · GitHub Pages</span>
   </footer>
+  <button id="to-top" class="to-top" type="button" aria-label="返回顶部">↑</button>
+  <script src="{{ site.baseurl }}/assets/search.js" defer></script>
+  <script src="{{ site.baseurl }}/assets/view.js" defer></script>
+  <script src="{{ site.baseurl }}/assets/ui.js" defer></script>
 </body>
 </html>
