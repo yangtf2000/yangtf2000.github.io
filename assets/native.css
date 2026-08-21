@@ -1,0 +1,134 @@
+/* ============================================================
+   兼容层样式（native.css）—— 用于「保留作者原版式」的文章
+   设计意图：只套标准外壳（sticky 导航 / 820 容器 / 基础字号色），
+   绝不覆盖作者内联的表格/图片/图表/卡片样式，尊重原有排版。
+   颜色收敛由文章内联样式统一映射完成（见转换脚本），本文件只管外壳。
+   ============================================================ */
+@import url("main.css");
+
+/* 文章页整体容器：严格 820 居中，底色比浏览器纯黑亮一档 */
+.post{
+  max-width:820px;
+  margin:0 auto;
+  padding:16px 0 80px;
+  background:#0a0e14;
+  border-radius:0 0 10px 10px;
+}
+
+/* ---------- 文章页顶部：茶叶末 + 一行导航（整行 sticky） ---------- */
+.post-head{
+  position:sticky;
+  top:0;
+  z-index:99;
+  background:#000;
+  border-bottom:1px solid var(--line);
+}
+.post-head-inner{
+  max-width:820px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:12px;
+  padding:5px 24px;
+  box-sizing:border-box;
+}
+.post-brand{
+  flex:1 1 0;
+  min-width:0;
+  text-align:left;
+  color:var(--text);
+  font-size:22px;
+  line-height:1.1;
+  font-family:"STXingkai","华文行楷","STKaiti","KaiTi","楷体",serif;
+  letter-spacing:3px;
+  text-decoration:none;
+}
+.post-brand:hover{color:var(--ice);text-decoration:none}
+.topbar-title-center{
+  flex:1 1 0;
+  text-align:center;
+  color:var(--text);
+  font-size:16px;
+  font-weight:600;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.post-topbar{
+  flex:1 1 0;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+/* ---------- 顶部导航栏里的章间翻页按钮 ---------- */
+.toc-prev,.toc-next{
+  flex:0 0 auto;
+  white-space:nowrap;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:13px;
+  padding:4px 10px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:transparent;
+  cursor:pointer;
+  font-family:inherit;
+}
+.toc-prev:hover,.toc-next:hover{color:var(--text);border-color:var(--ice-dim)}
+.toc-prev:disabled,.toc-next:disabled{opacity:.38;cursor:not-allowed;color:var(--muted);border-color:var(--line)}
+.toc-prev:disabled:hover,.toc-next:disabled:hover{color:var(--muted);border-color:var(--line)}
+
+/* 发布时间：native 文章若自带标题区，这里通常不用；保留以防万一 */
+.post-meta{
+  display:block;
+  text-align:center;
+  margin:2px 0 16px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* ---------- 基础正文（不覆盖作者内联字号/颜色，只给兜底） ---------- */
+.post-body{font-size:15px;line-height:1.8;color:#d3dbe6;counter-reset:sec}
+.post-body a{color:var(--ice)}
+.post-body a:hover{text-decoration:underline}
+
+/* ---------- 上一篇 / 下一篇 ---------- */
+.post-nav{
+  display:flex;gap:14px;margin-top:40px;
+  padding-top:22px;border-top:1px solid var(--line);
+}
+.post-nav-item{
+  flex:1;text-decoration:none;color:var(--text);
+  background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px;transition:.2s;
+}
+.post-nav-item:hover{border-color:var(--ice-dim);text-decoration:none}
+.post-nav-item.next{text-align:right}
+.post-nav-label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.post-nav-title{font-size:15px;color:var(--text)}
+
+/* 键盘可达性 */
+.topbar-home:focus-visible,
+.toc-prev:focus-visible,
+.toc-next:focus-visible,
+.post-nav-item:focus-visible,
+.post-body a:focus-visible{
+  outline:2px solid var(--ice);
+  outline-offset:2px;
+  border-radius:7px;
+}
+
+/* ---------- 手机端响应式 ---------- */
+@media(max-width:560px){
+  .post-head-inner{padding:4px 14px;gap:7px;flex-wrap:nowrap}
+  .post-brand{font-size:16px;letter-spacing:2px;text-align:left}
+  .topbar-title-center{flex:1 1 0;text-align:center;font-size:14px;font-weight:600}
+  .post-topbar{flex:1 1 0;min-width:0;justify-content:flex-end;gap:5px}
+  .toc-prev,.toc-next{font-size:0;padding:4px 9px}
+  .toc-prev::before{content:"←";font-size:13px}
+  .toc-next::before{content:"→";font-size:13px}
+}

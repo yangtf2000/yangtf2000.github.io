@@ -1,7 +1,35 @@
 ---
 layout: default
 ---
+<style>
+  /* 文章页隐藏首页大标题栏、搜索、底栏、返回顶部（由本布局自带精简顶栏取代） */
+  .site-head,.site-foot,#to-top{display:none!important}
+</style>
+
+<!-- 文章页顶部：茶叶末 + 一行导航（整行 sticky） -->
+<header class="post-head">
+  <div class="post-head-inner">
+    <a class="post-brand" href="{{ '/' | relative_url }}">茶叶末</a>
+    <span class="topbar-title-center">{{ page.title }}</span>
+    <nav class="post-topbar">
+      <button class="toc-prev" id="tocPrev" type="button" title="上一章">← 上一章</button>
+      <button class="toc-next" id="tocNext" type="button" title="下一章">下一章 →</button>
+    </nav>
+  </div>
+</header>
+
 <article class="post">
+  {% if page.image and not page.native_header %}
+  <section class="post-cover">
+    <img src="{{ page.image }}" alt="{{ page.title }}">
+  </section>
+  {% endif %}
+
+  {% if not page.native_header %}
+  <h1 class="post-title">{{ page.title }}</h1>
+  {% if page.date %}<div class="post-meta">{{ page.date | date: '%Y-%m-%d' }}</div>{% endif %}
+  {% endif %}
+
   <div class="post-body">
     {{ content }}
   </div>
@@ -21,3 +49,4 @@ layout: default
     {% endif %}
   </nav>
 </article>
+<script src="{{ '/assets/toc.js' | relative_url }}"></script>

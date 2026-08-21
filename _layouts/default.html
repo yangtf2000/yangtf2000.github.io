@@ -7,6 +7,11 @@
   <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | truncate: 160 }}">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/main.css">
+  {% if page.native_header %}
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/native.css">
+  {% else %}
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/article.css">
+  {% endif %}
 </head>
 <body>
   <header class="site-head">
